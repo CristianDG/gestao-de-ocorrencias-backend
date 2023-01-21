@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
 source "./.env"
-flask $@ -e .env --app src/main.py run --port $PORT
+flask $@ -e .env --app src/app.py  run --port $PORT
