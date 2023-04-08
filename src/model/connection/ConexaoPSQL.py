@@ -16,13 +16,13 @@ import psycopg2
 class ConexaoPSQL:
     
     def __init__(self, app=None):
-        self.app = app
+        self.localapp = app
         self.conexao = None
         if app is not None:
             self.init_app(app)
 
     def init_app(self, app):
-        self.conn = psycopg2.connect(
+        self.conexao = psycopg2.connect(
             host=app.config["PSQL_DB_HOST"],
             port=app.config["PSQL_DB_PORT"],
             database=app.config["PSQL_DB_NAME"],
@@ -38,11 +38,11 @@ class ConexaoPSQL:
 
     def fechar_conexao(self):
         if self.conexao is not None:
-            self.conn.__exit__(None, None, None)
+            self.conexao.__exit__(None, None, None)
             self.conexao = None
 
     def executa_query(self, query, params=None):
-        with self.app.app_context():
+        with self.localapp.app_context():
             conexao = self.conectar()
             with conexao.cursor() as cursor:
                 cursor.execute(query, params)
