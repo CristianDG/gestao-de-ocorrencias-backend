@@ -14,13 +14,16 @@ import psycopg2
 
 
 class ConexaoPSQL:
-    
+
+    #o paramêtro app referencia ao objeto APP que diz respeito á instância do Flask referente ao projeto
+    #ela carrega dados da aplicação, incluindo variáveis salvas internamente
     def __init__(self, app=None):
         self.localapp = app
         self.conexao = None
         if app is not None:
             self.init_app(app)
 
+    #atribui as váriaveis de conexão relacionada a base de dados
     def init_app(self, app):
         self.conexao = psycopg2.connect(
             host=app.config["PSQL_DB_HOST"],
@@ -33,7 +36,7 @@ class ConexaoPSQL:
     def conectar(self):
         if self.conexao is None:
             raise ValueError("A conexão não foi iniciada com uma instância do app")
-        self.conexao.__enter__()
+        self.conexao.__enter__() #usado para melhorar a performance do With de executa_query. Encerrando a sessão após termino da operação
         return self.conexao
 
     def fechar_conexao(self):
@@ -41,6 +44,8 @@ class ConexaoPSQL:
             self.conexao.__exit__(None, None, None)
             self.conexao = None
 
+
+    #executa a query e da o seu retorno. Caso não haja retorno não interfere na função
     def executa_query(self, query, params=None):
         with self.localapp.app_context():
             conexao = self.conectar()
