@@ -6,8 +6,6 @@ Classe utilizada para realizar a conexão com o banco postgres da aplicação
 
 dependêcnias utilizadas:
 psycopg2.binary
-os
-flask current_app
 """
 
 import psycopg2
@@ -45,7 +43,12 @@ class ConexaoPSQL:
             self.conexao = None
 
 
-    #executa a query e da o seu retorno. Caso não haja retorno não interfere na função
+    '''executa a query e da o seu retorno. Caso não haja retorno não interfere na função
+     
+     Por padrão o método .execute do pacote psycopg evita SQL injections.
+     Contanto que os paraâmetros sejam passados fora da query, não existem riscos.
+     '''
+    #A função executa query
     def executa_query(self, query, params=None):
         with self.localapp.app_context():
             conexao = self.conectar()
