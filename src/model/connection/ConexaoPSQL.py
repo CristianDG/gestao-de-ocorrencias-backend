@@ -28,7 +28,8 @@ class ConexaoPSQL:
             port=app.config["PSQL_DB_PORT"],
             database=app.config["PSQL_DB_NAME"],
             user=app.config["PSQL_DB_USER"],
-            password=app.config["PSQL_DB_PASSWORD"]
+            password=app.config["PSQL_DB_PASSWORD"],
+            client_encoding=app.config["CLIENT_ENCODING"]
         )
 
     def conectar(self):
@@ -40,6 +41,7 @@ class ConexaoPSQL:
     def fechar_conexao(self):
         if self.conexao is not None:
             self.conexao.__exit__(None, None, None)
+            self.conexao.close()
             self.conexao = None
 
 
@@ -49,11 +51,16 @@ class ConexaoPSQL:
      Contanto que os paraâmetros sejam passados fora da query, não existem riscos.
      '''
     #A função executa query
-    def executa_query(self, query, params=None):
+    def executa_query(self, query, params):
+        resultado_consulta = None
+        conexao = None
+        num_linhas_retorno = 0
         with self.localapp.app_context():
             conexao = self.conectar()
             with conexao.cursor() as cursor:
                 cursor.execute(query, params)
-                resultado_consulta = cursor.fetchall
-                conexao.commit()
-                return resultado_consulta
+                if any(query.strip().lower().startswith(x) for x in ("insert", "update", "delete")): #caso seja um insert,update,delete por padrão ele retorna um valor apenas da quantidade de linhas afetadas, mas não é utilizável para nós
+                    self.fechar_conexao()
+                    return None
+                else:#senão retorna as linhas adiquiridas na consulta
+                    resultado_consulta = cursor.fetchall()
