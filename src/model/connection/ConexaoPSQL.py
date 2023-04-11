@@ -2,6 +2,11 @@
 Feitor por Victor C. 
 Data: 08/04/2023
 
+Modificado dia 11/04
+
+Modifiquei o método de executar query para uma forma mais coerente para as querys com ou sem resultados utilizáveis
+assim como o método de fechar a conexão. Foi necessário utilizar o conexão.close() para de fato encerrar a conexão com o banco
+
 Classe utilizada para realizar a conexão com o banco postgres da aplicação
 
 dependêcnias utilizadas:
