@@ -7,6 +7,8 @@ name = "pypi"
 flask = "*"
 python-dotenv = "*"
 psycopg2-binary = "*"
+psycopg2cffi = "*"
+#psycopg2="*"
 jsonify = "*"
 
 [dev-packages]

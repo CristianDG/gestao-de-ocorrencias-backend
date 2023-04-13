@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify
 from dotenv import load_dotenv, find_dotenv
 import os
@@ -6,23 +7,23 @@ import datetime
 from model.connection.ConexaoPSQL import ConexaoPSQL
 from model.DAO.OcorrenciaDAO import OcorrenciaDAO, Ocorrencia
 
+import psycopg2
 
 app = Flask(__name__)
 
 load_dotenv(find_dotenv(".env"))
 
 #configuração das varáveis de ambiente de conexão com o banco
-app.config["PSQL_DB_HOST"] = os.getenv("PSQL_DB_HOST")
-app.config["PSQL_DB_NAME"] = os.getenv("PSQL_DB_NAME")
+app.config["PSQL_DB_HOST"]     = os.getenv("PSQL_DB_HOST")
+app.config["PSQL_DB_NAME"]     = os.getenv("PSQL_DB_NAME")
 app.config["PSQL_DB_PASSWORD"] = os.getenv("PSQL_DB_PASSWORD")
-app.config["PSQL_DB_PORT"] = os.getenv("PSQL_DB_PORT")
-app.config["PSQL_DB_USER"] = os.getenv("PSQL_DB_USER")
-app.config["CLIENT_ENCODING"] = os.getenv("CLIENT_ENCODING")
+app.config["PSQL_DB_PORT"]     = os.getenv("PSQL_DB_PORT")
+app.config["PSQL_DB_USER"]     = os.getenv("PSQL_DB_USER")
+app.config["CLIENT_ENCODING"]  = os.getenv("CLIENT_ENCODING")
 
 
 db = ConexaoPSQL(app)
 ocorrenciaDAO = OcorrenciaDAO(db)
-
 
 
 now = datetime.datetime.now()
