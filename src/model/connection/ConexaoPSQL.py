@@ -9,7 +9,7 @@ assim como o método de fechar a conexão. Foi necessário utilizar o conexão.c
 
 Classe utilizada para realizar a conexão com o banco postgres da aplicação
 
-dependêcnias utilizadas:
+dependências utilizadas:
 psycopg2.binary
 """
 
