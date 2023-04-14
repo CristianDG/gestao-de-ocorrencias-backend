@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from psycopg2cffi import compat; compat.register()
+#from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify
 from dotenv import load_dotenv, find_dotenv
 import os
@@ -7,7 +7,6 @@ import datetime
 from model.connection.ConexaoPSQL import ConexaoPSQL
 from model.DAO.OcorrenciaDAO import OcorrenciaDAO, Ocorrencia
 
-import psycopg2
 
 app = Flask(__name__)
 
@@ -34,8 +33,7 @@ sql_datetime = now.strftime('%Y-%m-%d %H:%M:%S')#formato de data utilizado pelo 
 @app.route("/")
 def hello_world():
 
-    ocorrencia = Ocorrencia("'teste'", "'teste'", "'teste'", "'Ativo'", sql_datetime, None, 1, 1)
-    ocorrencias = ocorrenciaDAO.criar_ocorrencia(ocorrencia)
+    ocorrencias = ocorrenciaDAO.getOcorrencias()
     ocorrencias_dict = None
     #Converte a lista de ocorrências em um dicionário
     if ocorrencias == None:

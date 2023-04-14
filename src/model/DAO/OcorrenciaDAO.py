@@ -2,11 +2,14 @@
 Feito por Victor C.
 Data: 08/04/23
 
-Modificado dia 11/04. Alterações feitas:
+Esta classe representa a classe DAO referente a classe ocorrência
+
+Modificado dia 11/04 por Victor C. Alterações feitas:
 
 correção de bugs na criação das classes e alteração nos métodos para uma melhor interpretação
 
-Esta classe representa a classe DAO referente a classe ocorrência
+Modificado 14/04 por Victor C. Alterações:
+Alteração da nomenclatura das funções para o padrão get, set, delete, etc.
 """
 
 
@@ -28,7 +31,7 @@ class OcorrenciaDAO:
     def __init__(self, conexao):
         self.conexaoBD = conexao
 
-    def criar_ocorrencia(self, ocorrencia):
+    def createAcorrencia(self, ocorrencia):
         query_sql = "INSERT INTO solve.ocorrencia (email_cidadao, nome_cidadao, descricao, status, data_criacao, " \
                     "id_local, id_setor) VALUES (%s, %s, %s, %s, %s, %s, %s);"
 
@@ -38,7 +41,8 @@ class OcorrenciaDAO:
         ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao, ocorrencia.status,
         ocorrencia.data_criacao, ocorrencia.id_local, ocorrencia.id_setor))
 
-    def atualizar_ocorrencia(self, ocorrencia):
+    #atualiza uma ocorrência
+    def setOcorrencia(self, ocorrencia):
         query_sql = "UPDATE solve.ocorrencia SET nome_cidadao = %s, email_cidadao = %s, descricao = %s, status = %s, " \
                     "data_criacao = %s, data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s;"
 
@@ -47,7 +51,8 @@ class OcorrenciaDAO:
             ocorrencia.data_criacao, ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor,
             ocorrencia.id))
 
-    def buscar_todas_ocorrencias(self):
+    #retorna todas as ocorrências
+    def getOcorrencias(self):
         query_sql = "SELECT * FROM solve.ocorrencia;"
         resultados_query = self.conexaoBD.executa_query(query_sql, None)
         ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
@@ -57,7 +62,9 @@ class OcorrenciaDAO:
 
         return ocorrencias
 
-    def buscar_ocorrencias_por_id_setor(self, id_setor):
+
+    #retorna as ocorrências com base no id do setor
+    def getocorrenciaByIdSetor(self, id_setor):
         query_sql = "SELECT * FROM solve.ocorrencia WHERE id_setor = %s"
         resultados_query = self.conexaoBD.executa_query(query_sql, (id_setor,))
         self.conexaoBD.fechar_conexao()

@@ -1,13 +1,13 @@
 """
 Feitor por Victor C. 
 Data: 08/04/2023
-
+Classe utilizada para realizar a conexão com o banco postgres da aplicação
 Modificado dia 11/04
 
 Modifiquei o método de executar query para uma forma mais coerente para as querys com ou sem resultados utilizáveis
 assim como o método de fechar a conexão. Foi necessário utilizar o conexão.close() para de fato encerrar a conexão com o banco
 
-Classe utilizada para realizar a conexão com o banco postgres da aplicação
+
 
 dependências utilizadas:
 psycopg2.binary
@@ -26,7 +26,7 @@ class ConexaoPSQL:
         if app is not None:
             self.init_app(app)
 
-    #atribui as váriaveis de conexão relacionada a base de dados
+    #atribui as váriaveis de conexão relacionada a base de dados e estabelece a comunicação com a base de dados
     def init_app(self, app):
         self.conexao = psycopg2.connect(
             host=app.config["PSQL_DB_HOST"],
@@ -37,6 +37,8 @@ class ConexaoPSQL:
             client_encoding=app.config["CLIENT_ENCODING"]
         )
 
+
+    #método auxiliar para dar início ao uso da conexão com o banco de dados
     def conectar(self):
         if self.conexao is None:
             raise ValueError("A conexão não foi iniciada com uma instância do app")
@@ -69,3 +71,4 @@ class ConexaoPSQL:
                     return None
                 else:#senão retorna as linhas adiquiridas na consulta
                     resultado_consulta = cursor.fetchall()
+                    return resultado_consulta
