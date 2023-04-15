@@ -8,6 +8,11 @@ Modifiquei o método de executar query para uma forma mais coerente para as quer
 assim como o método de fechar a conexão. Foi necessário utilizar o conexão.close() para de fato encerrar a conexão com o banco
 
 
+Modificado dia 13/04 por Victor C.
+Alterei o nome da classe, uma vez que passaremos a utilizar apenas postgres como BD, não existe sentido em ter o nome PSQL na classe
+deste modo, chamei ConexaoProd para deixar explicíto que é o banco da produção (regras de negócio)
+
+
 
 dependências utilizadas:
 psycopg2.binary
@@ -16,15 +21,15 @@ psycopg2.binary
 import psycopg2
 
 
-class ConexaoPSQL:
+class ConexaoProd:
 
     #o paramêtro app referencia ao objeto APP que diz respeito á instância do Flask referente ao projeto
     #ela carrega dados da aplicação, incluindo variáveis salvas internamente
     def __init__(self, app=None):
         self.localapp = app
         self.conexao = None
-        if app is not None:
-            self.init_app(app)
+        if self.localapp is not None:
+            self.init_app(self.localapp)
 
     #atribui as váriaveis de conexão relacionada a base de dados e estabelece a comunicação com a base de dados
     def init_app(self, app):

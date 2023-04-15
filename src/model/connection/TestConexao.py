@@ -1,5 +1,5 @@
 import unittest
-from ConexaoPSQL import ConexaoPSQL
+from ConexaoProd import ConexaoProd
 from flask import current_app
 
 
@@ -11,7 +11,7 @@ class TestPostgresConnection(unittest.TestCase):
         self.app = app.test_client()
         self.ctx = app.app_context()
         self.ctx.push()
-        self.conexao = ConexaoPSQL(app)
+        self.conexao = ConexaoProd(app)
         self.conexao.conectar()
 
     def tearDown(self):
