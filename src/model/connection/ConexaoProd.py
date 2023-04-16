@@ -34,11 +34,11 @@ class ConexaoProd:
     #atribui as váriaveis de conexão relacionada a base de dados e estabelece a comunicação com a base de dados
     def init_app(self, app):
         self.conexao = psycopg2.connect(
-            host=app.config["PSQL_DB_HOST"],
-            port=app.config["PSQL_DB_PORT"],
-            database=app.config["PSQL_DB_NAME"],
-            user=app.config["PSQL_DB_USER"],
-            password=app.config["PSQL_DB_PASSWORD"],
+            host=app.config["PROD_DB_HOST"],
+            port=app.config["PROD_DB_PORT"],
+            database=app.config["PROD_DB_NAME"],
+            user=app.config["PROD_DB_USER"],
+            password=app.config["PROD_DB_PASSWORD"],
             client_encoding=app.config["CLIENT_ENCODING"]
         )
 

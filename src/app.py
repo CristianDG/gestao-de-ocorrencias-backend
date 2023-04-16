@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#from psycopg2cffi import compat; compat.register()
+from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify
 from dotenv import load_dotenv, find_dotenv
 import os
@@ -22,7 +22,7 @@ app.config["PROD_DB_PORT"] = os.getenv("PROD_DB_PORT")
 app.config["PROD_DB_USER"] = os.getenv("PROD_DB_USER")
 app.config["CLIENT_ENCODING"] = os.getenv("CLIENT_ENCODING")
 
-    #configuração das varáveis de ambiente de conexão com o banco DE AUTENTICAÇÃO
+#configuração das varáveis de ambiente de conexão com o banco DE AUTENTICAÇÃO
 app.config["AUTH_DB_HOST"] = os.getenv("AUTH_DB_HOST")
 app.config["AUTH_DB_NAME"] = os.getenv("AUTH_DB_NAME")
 app.config["AUTH_DB_PASSWORD"] = os.getenv("AUTH_DB_PASSWORD")
@@ -30,8 +30,8 @@ app.config["AUTH_DB_PORT"] = os.getenv("AUTH_DB_PORT")
 app.config["AUTH_DB_USER"] = os.getenv("AUTH_DB_USER")
 
 
-db = ConexaoAuth(app)
-usuarioDAO = UsuarioDAO(db)
+db_auth = ConexaoAuth(app)
+usuarioDAO = UsuarioDAO(db_auth)
 
 
 now = datetime.datetime.now()
