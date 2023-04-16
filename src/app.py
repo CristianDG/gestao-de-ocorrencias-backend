@@ -8,7 +8,7 @@ from model.connection.ConexaoProd import ConexaoProd
 from model.connection.ConexaoAuth import ConexaoAuth
 from model.DAO.OcorrenciaDAO import OcorrenciaDAO, Ocorrencia
 from model.DAO.AuthDAO import AuthDAO
-
+from model.DAO.UsuarioDAO import UsuarioDAO
 
 app = Flask(__name__)
 
@@ -31,7 +31,7 @@ app.config["AUTH_DB_USER"] = os.getenv("AUTH_DB_USER")
 
 
 db = ConexaoAuth(app)
-conexaoAUTH = AuthDAO(db)
+usuarioDAO = UsuarioDAO(db)
 
 
 now = datetime.datetime.now()
@@ -44,7 +44,5 @@ def hello_world():
 
     email = "asdkasnasdjk@gmail.com"
     senha = "askdjnaskdnkasd"
-    conexaoAUTH.delete_user(1)
-    id = conexaoAUTH.get_user(1)
 
-    return f'{id}'
+    return f'{usuarioDAO.get_user(1)}'
