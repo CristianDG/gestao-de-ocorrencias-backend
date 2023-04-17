@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
-<<<<<<< HEAD
-from flask import Flask, request
-from controllers import OcorrenciaController
-=======
 from psycopg2cffi import compat; compat.register()
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from dotenv import load_dotenv, find_dotenv
 import os
 import datetime
@@ -13,7 +9,7 @@ from model.connection.ConexaoAuth import ConexaoAuth
 from model.DAO.OcorrenciaDAO import OcorrenciaDAO, Ocorrencia
 from model.DAO.AuthDAO import AuthDAO
 from model.DAO.UsuarioDAO import UsuarioDAO
->>>>>>> main
+from controllers import OcorrenciaController
 
 app = Flask(__name__)
 
