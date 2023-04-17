@@ -10,6 +10,7 @@ class Ocorrencia:
     status: Union[str, None]
     email_cidadao: Union[str, None]
     nome_cidadao: Union[str, None]
+    id: Union[int, None]
     data_criacao: datetime.datetime = datetime.datetime.now()
     data_resolucao: Union[datetime.datetime, None] = None
 
