@@ -1,5 +1,5 @@
 import unittest
-from ConexaoProd import ConexaoProd
+from .ConexaoProd import ConexaoProd
 from flask import current_app
 
 
@@ -18,7 +18,7 @@ class TestPostgresConnection(unittest.TestCase):
         self.conexao.fechar_conexao()
 
     def test_query(self):
-        query = "SELECT * FROM solve.ocorrencia;"
+        query = "SELECT * FROM solve.ocorrencia LIMIT 1;"
         params = None
         rows = self.conexao.executa_query(query, params)
         self.assertEqual(len(rows), 1)
