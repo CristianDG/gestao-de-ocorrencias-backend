@@ -18,6 +18,7 @@ dependências utilizadas:
 psycopg2.binary
 """
 
+import os
 import psycopg2
 
 
@@ -25,21 +26,21 @@ class ConexaoProd:
 
     #o paramêtro app referencia ao objeto APP que diz respeito á instância do Flask referente ao projeto
     #ela carrega dados da aplicação, incluindo variáveis salvas internamente
-    def __init__(self, app=None):
-        self.localapp = app
+    def __init__(self):
         self.conexao = None
-        if self.localapp is not None:
-            self.init_app(self.localapp)
+        if self.conexao is None:
+            self.init_app()
 
     #atribui as váriaveis de conexão relacionada a base de dados e estabelece a comunicação com a base de dados
-    def init_app(self, app):
+    def init_app(self):
+
         self.conexao = psycopg2.connect(
-            host=app.config["PROD_DB_HOST"],
-            port=app.config["PROD_DB_PORT"],
-            database=app.config["PROD_DB_NAME"],
-            user=app.config["PROD_DB_USER"],
-            password=app.config["PROD_DB_PASSWORD"],
-            client_encoding=app.config["CLIENT_ENCODING"]
+            host=os.getenv("PROD_DB_HOST"),
+            port=os.getenv("PROD_DB_PORT"),
+            database=os.getenv("PROD_DB_NAME"),
+            user=os.getenv("PROD_DB_USER"),
+            password=os.getenv("PROD_DB_PASSWORD"),
+            client_encoding=os.getenv("CLIENT_ENCODING")
         )
 
 
@@ -67,13 +68,14 @@ class ConexaoProd:
         resultado_consulta = None
         conexao = None
         num_linhas_retorno = 0
-        with self.localapp.app_context():
-            conexao = self.conectar()
-            with conexao.cursor() as cursor:
-                cursor.execute(query, params)
-                if any(query.strip().lower().startswith(x) for x in ("insert", "update", "delete")): #caso seja um insert,update,delete por padrão ele retorna um valor apenas da quantidade de linhas afetadas, mas não é utilizável para nós
-                    self.fechar_conexao()
-                    return None
-                else:#senão retorna as linhas adiquiridas na consulta
-                    resultado_consulta = cursor.fetchall()
-                    return resultado_consulta
+        conexao = self.conectar()
+        with conexao.cursor() as cursor:
+            cursor.execute(query, params)
+            if any(query.strip().lower().startswith(x) for x in ("insert", "update", "delete")): #caso seja um insert,update,delete por padrão ele retorna um valor apenas da quantidade de linhas afetadas, mas não é utilizável para nós
+                self.fechar_conexao()
+                return None
+            else:#senão retorna as linhas adiquiridas na consulta
+                resultado_consulta = cursor.fetchall()
+                return resultado_consulta
+
+conexaoProd = ConexaoProd()
