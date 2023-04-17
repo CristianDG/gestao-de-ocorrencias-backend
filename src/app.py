@@ -6,10 +6,11 @@ import os
 import datetime
 from model.connection.ConexaoProd import ConexaoProd
 from model.connection.ConexaoAuth import ConexaoAuth
-from model.DAO.OcorrenciaDAO import OcorrenciaDAO, Ocorrencia
+from model.DAO.OcorrenciaDAO import OcorrenciaDAO
 from model.DAO.AuthDAO import AuthDAO
 from model.DAO.UsuarioDAO import UsuarioDAO
 from controllers import OcorrenciaController
+
 
 app = Flask(__name__)
 
@@ -35,6 +36,9 @@ db_auth = ConexaoAuth(app)
 usuarioDAO = UsuarioDAO(db_auth)
 
 
+def formatar_erro(erro):
+    return ({'error': erro.args[0].value[0]}, erro.args[0].value[1])
+
 
 @app.route("/")
 def hello_world():
@@ -55,7 +59,7 @@ def registrar_ocorrencia():
     # TODO: falta validar
     # - [ ] a existencia de todos os campos
 
-    return OcorrenciaController.registrar(ocorrencia)
+    return {}, 201
 
 @app.patch("/ocorrencias/<int:id_ocorrencia>/<int:id_setor>")
 def encaminhar_ocorrencia(id_ocorrencia, id_setor):
@@ -63,4 +67,7 @@ def encaminhar_ocorrencia(id_ocorrencia, id_setor):
     # TODO: falta validar
     # - [ ] token jwt para gestor
 
-    return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
+    try:
+        return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
+    except Exception as erro:
+        return formatar_erro(erro)
