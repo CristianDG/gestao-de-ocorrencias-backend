@@ -15,3 +15,10 @@ class Ocorrencia:
     data_resolucao: Union[datetime.datetime, None] = None
 
     dict = asdict
+
+
+@dataclass
+class Usuario:
+    email: str
+    senha: str
+    id: Union[int, None]
