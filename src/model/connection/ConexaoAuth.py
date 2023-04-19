@@ -6,24 +6,25 @@ Classe referente á conexão com o banco de dados postgres utilizado para autên
 '''
 
 import psycopg2
+import os
 
 
 
 class ConexaoAuth:
 
-    def __init__(self, app=None):
-        self.localapp = app
+    def __init__(self):
         self.conexao = None
-        self.init_app(self.localapp)
+        if self.conexao is None:
+            self.init_app()
 
-    def init_app(self, app):
+    def init_app(self):
         self.conexao = psycopg2.connect(
-            host=app.config["AUTH_DB_HOST"],
-            port=app.config["AUTH_DB_PORT"],
-            database=app.config["AUTH_DB_NAME"],
-            user=app.config["AUTH_DB_USER"],
-            password=app.config["AUTH_DB_PASSWORD"],
-            client_encoding=app.config["CLIENT_ENCODING"]
+            host=os.getenv("AUTH_DB_HOST"),
+            port=os.getenv("AUTH_DB_PORT"),
+            database=os.getenv("AUTH_DB_NAME"),
+            user=os.getenv("AUTH_DB_USER"),
+            password=os.getenv("AUTH_DB_PASSWORD"),
+            client_encoding=os.getenv("CLIENT_ENCODING")
         )
 
     def conectar(self):
@@ -37,5 +38,4 @@ class ConexaoAuth:
         self.conexao.close()
 
 
-
-
+conexaoAuth = ConexaoAuth()
