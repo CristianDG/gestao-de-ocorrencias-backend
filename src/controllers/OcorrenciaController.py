@@ -1,5 +1,4 @@
 from tipos import Ocorrencia
-from dataclasses import asdict
 from enum import Enum
 from model.DAO.OcorrenciaDAO import OcorrenciaDAO
 from model.connection.ConexaoProd import conexaoProd
