@@ -36,8 +36,8 @@ class UsuarioDAO:
         # cria o usuário na base de dados de produção retornando seu ID
         cursorProd = self.conexaoProd.conectar()
         cursorProd.executa_query(
-            "INSERT INTO usuario (nome, sobrenome, status) VALUES (%s, %s, %s, %s) RETURNING id;",
-            (nome, sobrenome, status)
+            "INSERT INTO usuario (nome, sobrenome, email, status) VALUES (%s, %s, %s, %s) RETURNING id;",
+            (nome, sobrenome, email, status)
         )
         usuario_prod_id = cursorProd.fetchone()[0]
 
@@ -49,6 +49,10 @@ class UsuarioDAO:
         cursorProd.close()
 
         self.commit()
+
+        return {'prod_id': usuario_prod_id, 'auth_id': usuario_auth_id}
+
+
 
     def get_user_auth(self, user_id):
         cursor = self.conexaoAuth.cursor()
@@ -99,7 +103,7 @@ class UsuarioDAO:
     def delete_user(self, user_id):
         cursor = self.conexaoAuth.cursor()
         cursor.execute(
-            'DELETE FROM auth.users WHERE id = %s',
+            'DELETE FROM users WHERE id = %s',
             (user_id,)
         )
         self.conexaoAuth.commit()
