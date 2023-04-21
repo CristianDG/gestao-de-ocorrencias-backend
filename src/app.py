@@ -45,4 +45,4 @@ def hello_world():
     email = "asdkasnasdjk@gmail.com"
     senha = "askdjnaskdnkasd"
 
-    return f'{usuarioDAO.get_user(1)}'
+    return f'{usuarioDAO.get_user_auth(1)}'
