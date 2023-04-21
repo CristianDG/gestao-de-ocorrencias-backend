@@ -32,8 +32,8 @@ class OcorrenciaDAO:
         self.conexaoBD = conexao
 
     def createAcorrencia(self, ocorrencia):
-        query_sql = "INSERT INTO solve.ocorrencia (email_cidadao, nome_cidadao, descricao, status, data_criacao, " \
-                    "id_local, id_setor) VALUES (%s, %s, %s, %s, %s, %s, %s);"
+        query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, data_criacao, " \
+                    "id_local, id_setor) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id;"
 
 
         #linha de comando que gera o insert dentro do banco
@@ -43,17 +43,17 @@ class OcorrenciaDAO:
 
     #atualiza uma ocorrência
     def setOcorrencia(self, ocorrencia):
-        query_sql = "UPDATE solve.ocorrencia SET nome_cidadao = %s, email_cidadao = %s, descricao = %s, status = %s, " \
-                    "data_criacao = %s, data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s;"
+        query_sql = "UPDATE ocorrencia SET nome_cidadao = %s, email_cidadao = %s, descricao = %s, status = %s, " \
+                    "data_criacao = %s, data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s RETURNING id;"
 
-        self.conexaoBD.executa_query(query_sql, (
+        return self.conexaoBD.executa_query(query_sql, (
             ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao, ocorrencia.status,
             ocorrencia.data_criacao, ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor,
             ocorrencia.id))
 
     #retorna todas as ocorrências
     def getOcorrencias(self):
-        query_sql = "SELECT * FROM solve.ocorrencia;"
+        query_sql = "SELECT * FROM ocorrencia;"
         resultados_query = self.conexaoBD.executa_query(query_sql, None)
         ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
         for ocorrencia in resultados_query:
@@ -65,7 +65,7 @@ class OcorrenciaDAO:
 
     #retorna as ocorrências com base no id do setor
     def getocorrenciaByIdSetor(self, id_setor):
-        query_sql = "SELECT * FROM solve.ocorrencia WHERE id_setor = %s"
+        query_sql = "SELECT * FROM ocorrencia WHERE id_setor = %s"
         resultados_query = self.conexaoBD.executa_query(query_sql, (id_setor,))
         self.conexaoBD.fechar_conexao()
         ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
