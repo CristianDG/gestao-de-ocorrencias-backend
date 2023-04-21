@@ -6,7 +6,8 @@ from functools import wraps
 #from hashlib import sha256
 import jwt
 import os
-import datetime
+from datetime import datetime as dt, timedelta
+from tipos import Usuario
 from controllers import OcorrenciaController, UsuarioController
 
 app = Flask(__name__)
@@ -42,8 +43,8 @@ def decode(dados):
     return jwt.decode(dados, os.getenv('JWT_SECRET'), algorithms=["HS256"])
 
 
-def autenticar(cargos: list = []):
-    cargos.append('gestor')
+def autenticar(gestor=False, admin=False):
+
     def wrapper(fn):
         @wraps(fn)
         def inner(*args, **kwargs):
@@ -53,25 +54,40 @@ def autenticar(cargos: list = []):
                 return erro
 
             # FIXME: acho que precisa de um controle pra não estourar
-            id_usuario = int(decode(request.headers['Authorization'])['id'])
+            token = decode(request.headers['Authorization'])
+            id_usuario = int(token['id'])
 
+            # TODO: controlar se o token é antigo
+            ttl_token = timedelta(hours=3)
+
+            data_token = dt.fromtimestamp(token['data'])
+            agora = dt.now()
+
+            if (agora - data_token) > ttl_token:
+                return erro
+
+            # TODO: controlar se o usuário é gestor ou adm
             if not UsuarioController.procurarPorId(id_usuario):
                 return erro
 
-            return fn(*args, **kwargs)
+            # TODO: retornar o usuario que chamou o endpoint
+
+            usuario = Usuario(email="sla@email.com", id=id_usuario)
+
+            return fn(*args, **kwargs, usuario_solicitante=usuario)
 
         return inner
     return wrapper
 
 
 @app.route("/")
-@autenticar()
-def hello_world():
-    # TODO: Swagger ou Frontend?
-    return "teste2"
+@autenticar(gestor=True, admin=True)
+def hello_world(usuario_solicitante):
+    return 'admin' if usuario_solicitante.admin else 'gestor'
 
 @app.get("/ocorrencias")
 def listar_ocorrencias():
+    # FIXME: como controlar qual é o setor?
     return OcorrenciaController.listar()
 
 @app.post("/ocorrencias")
@@ -109,7 +125,7 @@ def login():
         return {'error': 'email ou senha incorretos'}, 400
 
     usuario = UsuarioController.procurarPorLogin(usuario_json['email'], usuario_json['senha'])
-    token = encode({'id': usuario.id})
+    token = encode({'id': usuario.id, 'data': dt.now().timestamp()})
 
     return { 'token': token }, 200
 

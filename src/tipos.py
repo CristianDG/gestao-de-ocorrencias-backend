@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import Union
+from typing import Optional, Union
 import datetime
 
 @dataclass
@@ -7,12 +7,12 @@ class Ocorrencia:
     descricao: str
     id_local: int
     id_setor: int
-    status: Union[str, None]
-    email_cidadao: Union[str, None]
-    nome_cidadao: Union[str, None]
-    id: Union[int, None]
+    status: Optional[str]
+    email_cidadao: Optional[str]
+    nome_cidadao: Optional[str]
+    id: Optional[int]
     data_criacao: datetime.datetime = datetime.datetime.now()
-    data_resolucao: Union[datetime.datetime, None] = None
+    data_resolucao: Optional[datetime.datetime] = None
 
     dict = asdict
 
@@ -20,5 +20,6 @@ class Ocorrencia:
 @dataclass
 class Usuario:
     email: str
-    senha: str
-    id: Union[int, None]
+    id: Optional[int] = None
+    admin: bool = False
+    senha: Optional[str] = None
