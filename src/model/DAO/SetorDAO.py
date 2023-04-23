@@ -4,7 +4,7 @@ Classe destinada para manipular os setor
 
 '''
 
-from ...tipos import Setor
+from tipos import Setor
 
 
 class SetorDAO:
