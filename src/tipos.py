@@ -28,3 +28,12 @@ class Usuario:
     id_prod: Optional[int] = None
     admin: bool = False
     senha: Optional[str] = None
+
+@dataclass
+class Setor:
+    nome: str
+    descricao: str
+    status: str
+    id: Optional[int] = None
+
+    dict = asdict

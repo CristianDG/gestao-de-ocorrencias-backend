@@ -84,7 +84,7 @@ class OcorrenciaDAO:
         ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
 
         for ocorrencia in resultados_query:
-            ocorrencias.append(self.formarOcorrencia(ocorrencia))
+            ocorrencias.append(self.formar_ocorrencia(ocorrencia))
         cursor.close()
         return ocorrencias
 
@@ -100,7 +100,7 @@ class OcorrenciaDAO:
         if not ocorrencia:
             return False
 
-        return self.formarOcorrencia(ocorrencia)
+        return self.formar_ocorrencia(ocorrencia)
 
 
     #retorna as ocorrências com base no id do setor
@@ -111,7 +111,7 @@ class OcorrenciaDAO:
         resultados = cursor.fetchall()
         ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
         for ocorrencia in resultados:
-            ocorrencias.append(self.formarOcorrencia(ocorrencia))
+            ocorrencias.append(self.formar_ocorrencia(ocorrencia))
         cursor.close()
         return ocorrencias
 

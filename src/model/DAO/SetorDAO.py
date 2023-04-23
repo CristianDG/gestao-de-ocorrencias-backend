@@ -4,25 +4,39 @@ Classe destinada para manipular os setor
 
 '''
 
+from ...tipos import Setor
+
+
 class SetorDAO:
     def __init__(self, dbProd):
         self.conexaoProd = dbProd
 
+    def fechar_conexao(self):
+        self.conexaoProd.fechar_conexao()
 
-    def create_setor(self, nome, descricao, status):
+    @staticmethod
+    def formar_setor(setor):
+        return Setor(
+            id=setor[0],
+            nome=setor[1],
+            descricao=setor[2],
+            status=setor[3],
+        )
+
+    def create_setor(self, setor):
         cursor = self.conexaoProd.executa_query(
             'INSERT INTO setor (nome, desc_responsabilidades, status) VALUES (%s, %s, %s) RETURNING id;',
-            (nome, descricao, status,)
+            (setor.nome, setor.descricao, setor.status,)
         )
 
         id_setor = cursor.fetchone()[0]
         cursor.close()
         return id_setor
 
-    def update_setor(self, id, nome, descricao, status):
+    def update_setor(self, setor):
         cursor = self.conexaoProd.executa_query(
             'UPDATE setor SET nome=%s, desc_responsabilidades=%s, status=%s WHERE id=%s RETURNING id',
-            (nome, descricao, status, id,)
+            (setor.nome, setor.descricao, setor.status, setor.id,)
         )
 
         id_setor = cursor.fetchone()[0]
@@ -35,15 +49,21 @@ class SetorDAO:
             'SELECT * FROM setor;', ()
         )
 
-        setores = cursor.fetchall()
+        setores = []
+
+        resultado_query = cursor.fetchall()
+
+        for setor in resultado_query:
+            setores.append(self.formar_setor(setor))
         cursor.close()
         return setores
 
     def get_setor_por_id(self, id):
         cursor = self.conexaoProd.executa_query(
-            'SELECT * FROM setor WHERE id=%s;', (id)
+            'SELECT * FROM setor WHERE id=%s;',
+            (id,)
         )
 
-        setores = cursor.fetchone()
+        setor = self.formar_setor(cursor.fetchone())
         cursor.close()
-        return setores
+        return setor

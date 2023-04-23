@@ -26,8 +26,9 @@ class TestOcorrenciaDAO(unittest.TestCase):
                                 status="aberto",
                                 id_local=1, id_setor=1, id=None)
 
-        id_ocorrencia = self.dao.createOcorrencia(ocorrencia)
+        id_ocorrencia = self.dao.create_ocorrencia(ocorrencia)
         self.primeiro_id_criado = id_ocorrencia
+        self.ultimo_id_criado = id_ocorrencia
 
         self.assertIsNotNone(id_ocorrencia)
 
@@ -36,12 +37,12 @@ class TestOcorrenciaDAO(unittest.TestCase):
         ocorrencia = Ocorrencia(email_cidadao="joao@gmail.com", nome_cidadao="João", descricao="teste",
                                 status="aberto",
                                 id_local=1, id_setor=1, id=None)
-        id_ocorrencia = self.dao.createOcorrencia(ocorrencia)
+        id_ocorrencia = self.dao.create_ocorrencia(ocorrencia)
 
         # Atualiza a descrição da ocorrência
         nova_descricao = "teste atualizado"
         ocorrencia.descricao = nova_descricao
-        self.dao.updateOcorrencia(ocorrencia)
+        self.dao.update_ocorrencia(ocorrencia)
         self.ultimo_id_criado = id_ocorrencia
         # Obtém a ocorrência atualizada
         ocorrencia_atualizada = self.dao.getOcorrenciaById(id_ocorrencia)
