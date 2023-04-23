@@ -10,9 +10,7 @@ class SetorDAO:
 
 
     def create_setor(self, nome, descricao, status):
-        cursor = self.conexaoProd.cursor()
-
-        cursor.execute(
+        cursor = self.conexaoProd.executa_query(
             'INSERT INTO setor (nome, desc_responsabilidades, status) VALUES (%s, %s, %s) RETURNING id;',
             (nome, descricao, status,)
         )
@@ -22,9 +20,7 @@ class SetorDAO:
         return id_setor
 
     def update_setor(self, id, nome, descricao, status):
-        cursor = self.conexaoProd.cursor()
-
-        cursor.execute(
+        cursor = self.conexaoProd.executa_query(
             'UPDATE setor SET nome=%s, desc_responsabilidades=%s, status=%s WHERE id=%s RETURNING id',
             (nome, descricao, status, id,)
         )
@@ -35,9 +31,7 @@ class SetorDAO:
         return id_setor
 
     def get_setores(self):
-        cursor = self.conexaoProd.cursor()
-
-        cursor.execute(
+        cursor = self.conexaoProd.executa_query(
             'SELECT * FROM setor;', ()
         )
 
@@ -45,10 +39,8 @@ class SetorDAO:
         cursor.close()
         return setores
 
-    def get_setores(self, id):
-        cursor = self.conexaoProd.cursor()
-
-        cursor.execute(
+    def get_setor_by_id(self, id):
+        cursor = self.conexaoProd.executa_query(
             'SELECT * FROM setor WHERE id=%s;', (id)
         )
 

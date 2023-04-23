@@ -47,12 +47,12 @@ class OcorrenciaDAO:
 
     #atualiza uma ocorrência
     def setOcorrencia(self, ocorrencia):
-        query_sql = "UPDATE ocorrencia SET nome_cidadao = %s, email_cidadao = %s, descricao = %s, status = %s, " \
-                    "data_criacao = %s, data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s RETURNING id;"
+        query_sql = "UPDATE ocorrencia SET nome_cidadao = %s, email_cidadao = %s, descricao = %s, status = %s," \
+                    " data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s RETURNING id;"
 
-        cursor =  self.conexaoBD.executa_query(query_sql, (
+        cursor = self.conexaoBD.executa_query(query_sql, (
             ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao, ocorrencia.status,
-            ocorrencia.data_criacao, ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor,
+            ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor,
             ocorrencia.id))
         id = cursor.fetchone()[0]
 

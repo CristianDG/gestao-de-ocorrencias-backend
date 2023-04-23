@@ -18,9 +18,7 @@ class GestorDAO:
 
         id_usuario = (self.usuarioDAO.create_user(email, senha, nome, sobrenome, status))['prod_id']
 
-        cursor = self.conexaoProd.cursor()
-
-        cursor.execute(
+        cursor = self.conexaoProd.executa_query(
             'INSERT INTO gestor_ocorrencia (id, setor_atuacao) VALUES (%s, %s) RETURNING id;',
             (id_usuario, setor,)
         )
@@ -35,11 +33,9 @@ class GestorDAO:
         id_usuario_auth = self.usuarioDAO.update_user_auth(id_auth, email, senha)
         id_usuario_prod = self.usuarioDAO.update_user_prod(id_usuario, nome, sobrenome, None, email, status)
 
-        cursor = self.conexaoProd.cursor()
-
-        cursor.execute(
-            'UPDATE gestor_ocorrencia SET setor_atuacao = %s WHERE id = %s RETURNING id' ,
-            (setor, id_usuario_prod, )
+        cursor = self.conexaoProd.executa_query(
+            'UPDATE gestor_ocorrencia SET setor_atuacao = %s WHERE id = %s RETURNING id',
+            (setor, id_usuario_prod,)
         )
 
         id_att = cursor.fetchone()[0]
