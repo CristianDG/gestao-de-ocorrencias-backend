@@ -20,6 +20,10 @@ class Ocorrencia:
 @dataclass
 class Usuario:
     email: str
+    nome: str
+    sobrenome: str
+    status: str
+    cargo: str
     id: Optional[int] = None
     admin: bool = False
     senha: Optional[str] = None
