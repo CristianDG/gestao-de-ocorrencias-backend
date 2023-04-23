@@ -39,7 +39,7 @@ class SetorDAO:
         cursor.close()
         return setores
 
-    def get_setor_by_id(self, id):
+    def get_setor_por_id(self, id):
         cursor = self.conexaoProd.executa_query(
             'SELECT * FROM setor WHERE id=%s;', (id)
         )

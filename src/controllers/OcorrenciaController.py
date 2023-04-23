@@ -11,7 +11,7 @@ class Erro(Enum):
     SETOR_INVALIDO = ('Setor não encontrado', 404)
 
 def listar():
-    return ocorrenciaDAO.getOcorrencias()
+    return ocorrenciaDAO.get_ocorrencias()
 
 def encaminhar(id_ocorrencia: int, id_setor: int):
     ocorrencia = ocorrenciaDAO.getOcorrenciaById(id_ocorrencia)

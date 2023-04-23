@@ -41,7 +41,7 @@ class TestOcorrenciaDAO(unittest.TestCase):
         # Atualiza a descrição da ocorrência
         nova_descricao = "teste atualizado"
         ocorrencia.descricao = nova_descricao
-        self.dao.updateOcorrencia(id_ocorrencia, ocorrencia)
+        self.dao.updateOcorrencia(ocorrencia)
         self.ultimo_id_criado = id_ocorrencia
         # Obtém a ocorrência atualizada
         ocorrencia_atualizada = self.dao.getOcorrenciaById(id_ocorrencia)

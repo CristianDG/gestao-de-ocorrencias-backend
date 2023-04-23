@@ -12,7 +12,7 @@ Modificado 14/04 por Victor C. Alterações:
 Alteração da nomenclatura das funções para o padrão get, set, delete, etc.
 """
 
-from ...tipos import Ocorrencia
+from tipos import Ocorrencia
 
 #class Ocorrencia:
 #    def __init__(self, nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao,
@@ -34,7 +34,7 @@ class OcorrenciaDAO:
 
 
     @staticmethod
-    def formarOcorrencia(ocorrencia):
+    def formar_ocorrencia(ocorrencia):
         return Ocorrencia(
             id=ocorrencia[0],
             email_cidadao=ocorrencia[1],
@@ -47,7 +47,7 @@ class OcorrenciaDAO:
             id_setor=ocorrencia[8]
         )
 
-    def createOcorrencia(self, ocorrencia):
+    def create_ocorrencia(self, ocorrencia):
         query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, " \
                     "id_local, id_setor) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;"
 
@@ -62,7 +62,7 @@ class OcorrenciaDAO:
 
 
     #atualiza uma ocorrência
-    def updateOcorrencia(self, ocorrencia):
+    def update_ocorrencia(self, ocorrencia):
         query_sql = "UPDATE ocorrencia SET nome_cidadao = %s, email_cidadao = %s, descricao = %s, status = %s," \
                     " data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s RETURNING id;"
 
@@ -76,7 +76,7 @@ class OcorrenciaDAO:
         return id_ocorrencia
 
     #retorna todas as ocorrências
-    def getOcorrencias(self):
+    def get_ocorrencias(self):
         query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id " \
                     "FROM ocorrencia;"
         cursor = self.conexaoBD.executa_query(query_sql, None)
@@ -104,7 +104,7 @@ class OcorrenciaDAO:
 
 
     #retorna as ocorrências com base no id do setor
-    def getocorrenciaByIdSetor(self, id_setor):
+    def get_ocorrencias_por_id_Setor(self, id_setor):
         query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id  " \
                     "FROM ocorrencia WHERE id_setor = %s"
         cursor = self.conexaoBD.executa_query(query_sql, id_setor)
@@ -115,7 +115,7 @@ class OcorrenciaDAO:
         cursor.close()
         return ocorrencias
 
-    def getocorrenciaById(self, id):
+    def get_ocorrencias_por_id(self, id):
         query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id " \
                     "FROM ocorrencia WHERE id = %s"
         cursor = self.conexaoBD.executa_query(query_sql, id)
@@ -126,3 +126,8 @@ class OcorrenciaDAO:
                 Ocorrencia(ocorrencia[0], ocorrencia[1], ocorrencia[2], ocorrencia[3], ocorrencia[4], ocorrencia[5], ocorrencia[6], ocorrencia[7], ocorrencia[8]))
         cursor.close()
         return ocorrencias
+
+
+
+
+
