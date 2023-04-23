@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from psycopg2cffi import compat; compat.register()
+#from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify, request, redirect, url_for, Blueprint
 from dotenv import load_dotenv, find_dotenv
 from functools import wraps
