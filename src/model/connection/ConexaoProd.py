@@ -47,7 +47,6 @@ class ConexaoProd:
     def conectar(self):
         if self.conexao is None:
             raise ValueError("A conexão não foi iniciada com uma instância do app")
-        self.conexao.__enter__() #usado para melhorar a performance do With de executa_query. Encerrando a sessão após termino da operação
         return self.conexao
 
     def fechar_conexao(self):
@@ -66,6 +65,6 @@ class ConexaoProd:
     def executa_query(self, query, params=None):
         with self.localapp.app_context():
             conexao = self.conectar()
-            with conexao.cursor() as cursor:
-                cursor.execute(query, params)
-                return cursor
+            cursor = conexao.cursor()
+            cursor.execute(query, params)
+            return cursor

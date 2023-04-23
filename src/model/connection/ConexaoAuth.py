@@ -38,9 +38,9 @@ class ConexaoAuth:
 
 
 
-    def executa_query(self, query, params):
+    def executa_query(self, query, params=None):
         with self.localapp.app_context():
             conexao = self.conectar()
-            with conexao.cursor() as cursor:
-                cursor.execute(query, params)
-                return cursor
+            cursor = conexao.cursor()
+            cursor.execute(query, params)
+            return cursor

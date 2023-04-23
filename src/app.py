@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-from psycopg2cffi import compat; compat.register()
+#from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify
 from dotenv import load_dotenv, find_dotenv
 import os
 import datetime
-from model.connection.ConexaoProd import ConexaoProd
-from model.connection.ConexaoAuth import ConexaoAuth
-from model.DAO.OcorrenciaDAO import OcorrenciaDAO, Ocorrencia
-from model.DAO.AuthDAO import AuthDAO
-from model.DAO.UsuarioDAO import UsuarioDAO
+from src.model.connection.ConexaoProd import ConexaoProd
+from src.model.connection.ConexaoAuth import ConexaoAuth
+from src.model.DAO.OcorrenciaDAO import OcorrenciaDAO, Ocorrencia
+from src.model.DAO.AuthDAO import AuthDAO
+from src.model.DAO.UsuarioDAO import UsuarioDAO
 
 app = Flask(__name__)
 
@@ -30,8 +30,8 @@ app.config["AUTH_DB_PORT"] = os.getenv("AUTH_DB_PORT")
 app.config["AUTH_DB_USER"] = os.getenv("AUTH_DB_USER")
 
 
-db_auth = ConexaoAuth(app)
-usuarioDAO = UsuarioDAO(db_auth)
+db_auth = ConexaoProd(app)
+ocorrenciaDAO = OcorrenciaDAO(db_auth)
 
 
 now = datetime.datetime.now()
@@ -42,7 +42,4 @@ sql_datetime = now.strftime('%Y-%m-%d %H:%M:%S')#formato de data utilizado pelo 
 @app.route("/")
 def hello_world():
 
-    email = "asdkasnasdjk@gmail.com"
-    senha = "askdjnaskdnkasd"
-
-    return f'{usuarioDAO.get_user_auth(1)}'
+     return (ocorrenciaDAO.getOcorrencias())
