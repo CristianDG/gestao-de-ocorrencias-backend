@@ -92,7 +92,6 @@ def autenticar(gestor=False, admin=False):
 def hello_world(usuario_solicitante):
     return 'admin' if usuario_solicitante.admin else 'gestor'
 
-<<<<<<< HEAD
 @app.get("/ocorrencias")
 def listar_ocorrencias():
     # FIXME: como controlar qual é o setor?
