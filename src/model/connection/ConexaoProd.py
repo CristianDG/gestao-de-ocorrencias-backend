@@ -65,8 +65,7 @@ class ConexaoProd:
      '''
     #A função executa query
     def executa_query(self, query, params=None):
-        with self.localapp.app_context():
-            conexao = self.conectar()
-            with conexao.cursor() as cursor:
-                cursor.execute(query, params)
-                return cursor
+        conexao = self.conectar()
+        cursor = conexao.cursor()
+        cursor.execute(query, params)
+        return cursor

@@ -30,7 +30,7 @@ from tipos import Ocorrencia
 class OcorrenciaDAO:
 
     def __init__(self, conexao):
-        self.conexaoBD = conexao.conectar()
+        self.conexaoBD = conexao
 
 
     @staticmethod
@@ -48,13 +48,13 @@ class OcorrenciaDAO:
         )
 
     def createOcorrencia(self, ocorrencia):
-        query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, data_criacao, " \
-                    "id_local, id_setor) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id;"
+        query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, " \
+                    "id_local, id_setor) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;"
 
 
         cursor = self.conexaoBD.executa_query(query_sql, (
-        ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao, ocorrencia.status,
-        ocorrencia.data_criacao, ocorrencia.id_local, ocorrencia.id_setor))
+            ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao,
+            ocorrencia.status, ocorrencia.id_local, ocorrencia.id_setor))
 
         id = cursor.fetchone()[0]
         cursor.close()
@@ -78,7 +78,7 @@ class OcorrenciaDAO:
     def getOcorrencias(self):
         query_sql = "SELECT * FROM ocorrencia;"
         cursor = self.conexaoBD.executa_query(query_sql, None)
-        resultados = cursor.fetchall()
+        resultados_query = cursor.fetchall()
         ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
         for ocorrencia in resultados_query:
             ocorrencias.append(self.formarOcorrencia(ocorrencia))
@@ -86,12 +86,16 @@ class OcorrenciaDAO:
         return ocorrencias
 
     def getOcorrenciaById(self, id_ocorrencia):
-        query_sql = "SELECT * FROM solve.ocorrencia WHERE id = %s;"
-        resultados_query = self.conexaoBD.executa_query(query_sql, (id_ocorrencia,))
-        if not resultados_query:
-            return None
+        query_sql = "SELECT * FROM ocorrencia WHERE id = %s;"
+        cursor = self.conexaoBD.executa_query(query_sql, (id_ocorrencia,))
 
-        ocorrencia = resultados_query[0]
+        if cursor is None:
+            return False
+
+        ocorrencia = cursor.fetchone()
+
+        if not ocorrencia:
+            return False
 
         return self.formarOcorrencia(ocorrencia)
 

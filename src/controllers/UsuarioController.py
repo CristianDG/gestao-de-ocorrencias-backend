@@ -1,9 +1,10 @@
 from tipos import Usuario
 from enum import Enum
 from model.DAO.UsuarioDAO import UsuarioDAO
-from model.connection.ConexaoAuth import conexaoAuth
+from model.connection.ConexaoAuth import ConexaoAuth
+from model.connection.ConexaoProd import ConexaoProd
 
-usuarioDAO = UsuarioDAO(conexaoAuth)
+usuarioDAO = UsuarioDAO(ConexaoAuth(), ConexaoProd())
 
 def criar():
     assert False, "Not Implemented"

@@ -7,7 +7,7 @@ from functools import wraps
 import jwt
 import os
 from datetime import datetime as dt, timedelta
-from tipos import Usuario
+from tipos import Usuario, Ocorrencia
 from controllers import OcorrenciaController, UsuarioController
 
 app = Flask(__name__)
@@ -30,10 +30,16 @@ app.config["AUTH_DB_PORT"] = os.getenv("AUTH_DB_PORT")
 app.config["AUTH_DB_USER"] = os.getenv("AUTH_DB_USER")
 
 
-
-
 def formatar_erro(erro):
-    return ({'error': erro.args[0].value[0]}, erro.args[0].value[1])
+    if os.getenv('DEBUG'):
+        print(erro)
+    try:
+        return ({'error': erro.args[0].value[0]}, erro.args[0].value[1])
+    except Exception as e:
+        if not os.getenv('DEBUG'):
+            return {'error': 'internal server error'}, 500
+
+        return {'error': str(e)}, 500
 
 
 def encode(dados):
@@ -92,15 +98,26 @@ def listar_ocorrencias():
 
 @app.post("/ocorrencias")
 def registrar_ocorrencia():
-    ocorrencia = request.get_json()
+    ocorrencia_json = request.get_json()
 
-    if not ocorrencia['descricao']:
+    if(not ocorrencia_json.get('descricao')
+    or not ocorrencia_json.get('id_local')
+    or not ocorrencia_json.get('id_setor')):
         return {'error': 'descrição inválida'}, 400
 
     # TODO: falta validar
     # - [ ] a existencia de todos os campos
 
-    return '', 201
+
+    dados_ocorrencia = {
+        'email_cidadao' : ocorrencia_json.get('email_cidadao'),
+        'nome_cidadao' : ocorrencia_json.get('nome_cidadao'),
+        'descricao' : ocorrencia_json['descricao'],
+        'id_local' : ocorrencia_json['id_local'],
+        'id_setor' : ocorrencia_json['id_setor']
+    }
+
+    return OcorrenciaController.registrar(dados_ocorrencia), 201
 
 @app.patch("/ocorrencias/<int:id_ocorrencia>/<int:id_setor>")
 def encaminhar_ocorrencia(id_ocorrencia, id_setor):
@@ -108,10 +125,12 @@ def encaminhar_ocorrencia(id_ocorrencia, id_setor):
     # TODO: falta validar
     # - [ ] token jwt para gestor
 
-    try:
-        return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
-    except Exception as erro:
-        return formatar_erro(erro)
+    return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
+#    try:
+#        return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
+#    except Exception as erro:
+#        print(erro)
+#        return formatar_erro(erro)
 
 
 @app.get('/login')
