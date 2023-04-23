@@ -64,18 +64,9 @@ class ConexaoProd:
      Contanto que os paraâmetros sejam passados fora da query, não existem riscos.
      '''
     #A função executa query
-    def executa_query(self, query, params):
-        resultado_consulta = None
-        conexao = None
-        num_linhas_retorno = 0
-        conexao = self.conectar()
-        with conexao.cursor() as cursor:
-            cursor.execute(query, params)
-            if any(query.strip().lower().startswith(x) for x in ("insert", "update", "delete")): #caso seja um insert,update,delete por padrão ele retorna um valor apenas da quantidade de linhas afetadas, mas não é utilizável para nós
-                self.fechar_conexao()
-                return None
-            else:#senão retorna as linhas adiquiridas na consulta
-                resultado_consulta = cursor.fetchall()
-                return resultado_consulta
-
-conexaoProd = ConexaoProd()
+    def executa_query(self, query, params=None):
+        with self.localapp.app_context():
+            conexao = self.conectar()
+            with conexao.cursor() as cursor:
+                cursor.execute(query, params)
+                return cursor

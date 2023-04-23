@@ -38,4 +38,10 @@ class ConexaoAuth:
         self.conexao.close()
 
 
-conexaoAuth = ConexaoAuth()
+    def executa_query(self, query, params):
+        with self.localapp.app_context():
+            conexao = self.conectar()
+            with conexao.cursor() as cursor:
+                cursor.execute(query, params)
+                return cursor
+
