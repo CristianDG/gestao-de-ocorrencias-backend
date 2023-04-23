@@ -6,7 +6,7 @@ Classe destinada para manipular os setor
 
 class SetorDAO:
     def __init__(self, dbProd):
-        self.conexaoProd = dbProd.conectar()
+        self.conexaoProd = dbProd
 
 
     def create_setor(self, nome, descricao, status):

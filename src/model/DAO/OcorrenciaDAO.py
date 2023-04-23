@@ -29,7 +29,7 @@ class Ocorrencia:
 class OcorrenciaDAO:
 
     def __init__(self, conexao):
-        self.conexaoBD = conexao.conectar()
+        self.conexaoBD = conexao
 
     def createAcorrencia(self, ocorrencia):
         query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, data_criacao, " \

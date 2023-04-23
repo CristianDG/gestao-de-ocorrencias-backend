@@ -44,8 +44,3 @@ class ConexaoAuth:
             with conexao.cursor() as cursor:
                 cursor.execute(query, params)
                 return cursor
-
-
-
-
-

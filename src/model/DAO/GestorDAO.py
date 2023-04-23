@@ -8,7 +8,7 @@ Classe DAO para manipulação dos gestores
 class GestorDAO:
 
     def __init__(self, dbProd, usuarioDAO):
-        self.conexaoProd = dbProd.conectar()
+        self.conexaoProd = dbProd
         self.usuarioDAO = usuarioDAO
 
 

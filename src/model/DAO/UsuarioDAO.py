@@ -16,8 +16,8 @@ deste modo, destinei está DAO para fazer o controle das duas bases de dados ao 
 class UsuarioDAO:
 
     def __init__(self, dbAuth, dbProd):
-        self.conexaoAuth = dbAuth.conectar()
-        self.conexaoProd = dbProd.conectar()
+        self.conexaoAuth = dbAuth
+        self.conexaoProd = dbProd
 
     def commit(self):
         self.conexaoProd.commit()
