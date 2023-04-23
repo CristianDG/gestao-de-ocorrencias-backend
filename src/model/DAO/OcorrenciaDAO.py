@@ -12,7 +12,7 @@ Modificado 14/04 por Victor C. Alterações:
 Alteração da nomenclatura das funções para o padrão get, set, delete, etc.
 """
 
-from src.tipos import Ocorrencia
+from ...tipos import Ocorrencia
 
 #class Ocorrencia:
 #    def __init__(self, nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao,

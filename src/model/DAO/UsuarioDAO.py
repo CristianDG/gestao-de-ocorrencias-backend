@@ -12,6 +12,7 @@ deste modo, destinei está DAO para fazer o controle das duas bases de dados ao 
 
 '''
 
+from tipos import Usuario
 
 class UsuarioDAO:
 
@@ -23,12 +24,24 @@ class UsuarioDAO:
         self.conexaoProd.commit()
         self.conexaoAuth.commit()
 
-    def create_user(self, email, senha, nome, sobrenome, status):
+    @staticmethod
+    def formarUsuario(usuario):
+        return Usuario(
+            id_auth=usuario[0],
+            id_prod=usuario[1],
+            email=usuario[2],
+            nome=usuario[3],
+            status=usuario[4],
+            cargo=usuario[5],
+            senha=usuario[6],
 
+        )
+
+    def create_user(self,usuario):
         # cria o usuário na base de dados de autênticação e retorna o seu id para ser usado abaixo
         cursorAuth = self.conexaoAuth.executa_query(
             'INSERT INTO users (email, password) VALUES (%s, %s) RETURNING id;',
-            (email, senha)
+            (usuario.email, usuario.senha)
         )
 
         usuario_auth_id = cursorAuth.fetchone()[0]
@@ -37,7 +50,7 @@ class UsuarioDAO:
         # cria o usuário na base de dados de produção retornando seu ID
         cursorProd = self.conexaoProd.executa_query(
             "INSERT INTO usuario (nome, sobrenome, email, status) VALUES (%s, %s, %s, %s) RETURNING id;",
-            (nome, sobrenome, email, status)
+            (usuario.nome, usuario.sobrenome, usuario.email, usuario.status)
         )
         usuario_prod_id = cursorProd.fetchone()[0]
 
@@ -49,26 +62,36 @@ class UsuarioDAO:
         cursorProd.close()
 
 
-        return {'prod_id': usuario_prod_id, 'auth_id': usuario_auth_id}
+        return usuario_prod_id
 
 
 
-    def get_user_auth(self, user_id):
-        cursor = self.conexaoAuth.executa_query(
-            'SELECT email, criado_em FROM users WHERE id = %s;',
-            (user_id,)
+    #retorna o id do banco de autênticação de um usuário do banco de produção
+    def get_user_prod_map_auth(self, id):
+        cursor = self.conexaoProd.executa_query(
+            'SELECT id_auth FROM usuario_auth_map WHERE id_usuario =%s',
+            (id,)
+        )
+        id_auth = cursor.fetchone()[0]
+        cursor.close()
+
+        return id_auth
+
+    #retorna o id do banco de produção de um usuário do banco de autênticação
+    def get_user_auth_map_prod(self, id):
+        cursor = self.conexaoProd.executa_query(
+            'SELECT id_usuario FROM usuario_auth_map WHERE id_auth=%s',
+            (id,)
         )
 
-        row = cursor.fetchone()
+        id_prod = cursor.fetchone()[0]
         cursor.close()
-        if row:
-            return {'id': user_id, 'email': row[0], 'criado_em': row[1]}
-        else:
-            return None
+
+        return id_prod
 
     def get_user_prod(self, id):
         cursor = self.conexaoProd.executa_query(
-            "SELECT id , nome, email, matricula, status, setor FROM (SELECT u.id, u.nome, u.email, u.matricula, "
+            "SELECT id , nome, email, matricula, status FROM (SELECT u.id, u.nome, u.email, u.matricula, "
             "u.status, go.setor_atuacao as setor FROM gestor_ocorrencia as go RIGHT JOIN usuario as u on go.id = u.id "
             "WHERE u.id = %s) as dados_gestor",
             (id,)
@@ -77,8 +100,25 @@ class UsuarioDAO:
         linha = cursor.fetchone()
         cursor.close()
         if linha:
-            return {'id': linha[0], 'nome': linha[1], 'email': linha[2], 'matricula': linha[3], 'status': linha[4], 'setor': linha[5]}
+            return self.formarUsuario(linha)
 
+    def get_user_auth(self, user_id):
+        cursor = self.conexaoAuth.executa_query(
+            'SELECT email FROM users WHERE id = %s;',
+            (user_id,)
+        )
+
+        row = cursor.fetchone()
+        cursor.close()
+        if row:
+            return {'id': user_id, 'email': row[0]}
+        else:
+            return None
+
+
+    def update_user(self, usuario):
+        self.update_user_auth(usuario.id_auth, usuario.email, usuario.senha)
+        self.update_user_prod(usuario.id_prod, usuario.nome, usuario.sobrenome, None, usuario.email, usuario.status)
 
     def update_user_auth(self, user_id, email, senha):
         cursor = self.conexaoAuth.executa_query(
@@ -95,9 +135,13 @@ class UsuarioDAO:
 
         cursor.close()
 
-    def delete_user(self, user_id):
-        cursor = self.conexaoAuth.executa_query(
-            'DELETE FROM users WHERE id = %s',
-            (user_id,)
+    def delete_user(self, id_prod):
+        cursorAuth = self.conexaoAuth.executa_query(
+            'DELETE FROM usuario WHERE id = %s',
+            (id_prod,)
         )
-        cursor.close()
+        cursorAuth.close()
+
+        cursorProd = self.conexaoProd.executa_query(
+
+        )

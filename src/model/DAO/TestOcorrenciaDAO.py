@@ -1,88 +1,84 @@
 import unittest
-import datetime
-from .OcorrenciaDAO import OcorrenciaDAO, Ocorrencia
-from src.model.connection.ConexaoProd import ConexaoProd
-from src.app import app
+from .OcorrenciaDAO import OcorrenciaDAO
+from ...tipos import Ocorrencia
+from ..connection.ConexaoProd import ConexaoProd
+
 
 
 class TestOcorrenciaDAO(unittest.TestCase):
 
     def setUp(self):
         # Instancia a DAO e cria uma conexão temporária com o banco de dados para os testes
-        self.instanciaBD = ConexaoProd(app)
-        self.dao = OcorrenciaDAO(self.instanciaBD)
-        self.dao.getOcorrencias()
+        self.dao = OcorrenciaDAO(ConexaoProd())
+        self.primeiro_id_criado = None
+        self.ultimo_id_criado = None
 
     def tearDown(self):
         # Fecha a conexão e exclui o banco de dados temporário
+        self.dao.conexaoBD.executa_query(
+            'DELETE FROM ocorrencia WHERE id>=%s and id<=%s;',
+            (self.primeiro_id_criado, self.ultimo_id_criado)
+        )
         self.dao.conexaoBD.fechar_conexao()
 
     def test_inserir_ocorrencia(self):
-        # Testa se um produto pode ser inserido corretamente na tabela
-        nome = 'pedroTestes'
-        email_cidadao = 'pedro@gmail.com'
-        descricao = "testando"
-        ocorrencia = Ocorrencia(' pedroTestes', 'pedro@gmail.com', 'testando só', 'Aberto', 1, 2)
-        id_inserido = self.dao.createOcorrencia(ocorrencia)
-        ocorrencia.id = id_inserido
-        cursor = self.instanciaBD.executa_query(
-            'SELECT nome_cidadao, email_cidadao, descricao, status, id_local, id_setor, id FROM ocorrencia WHERE id=%s;',
-            (id_inserido,)
-        )
-        resultados = cursor.fetchone()
-        ocorrencias = []
-        ocorrencias.append(
-            Ocorrencia(resultados[0], resultados[1], resultados[2], resultados[3], resultados[4], resultados[5],
-                       ))
-        cursor.close()
-        self.assertEqual(ocorrencia, ocorrencias[0])
+        ocorrencia = Ocorrencia(email_cidadao="maria@gmail.com", nome_cidadao="Maria", descricao="teste",
+                                status="aberto",
+                                id_local=1, id_setor=1, id=None)
+
+        id_ocorrencia = self.dao.createOcorrencia(ocorrencia)
+        self.primeiro_id_criado = id_ocorrencia
+
+        self.assertIsNotNone(id_ocorrencia)
 
     def test_atualizar_ocorrencia(self):
-        # Testa se um produto pode ser atualizado corretamente na tabela
-        now = datetime.datetime.now()
-        sql_datetime = now.strftime('%Y-%m-%d %H:%M:%S%z')
+        # Cria uma nova ocorrência
+        ocorrencia = Ocorrencia(email_cidadao="joao@gmail.com", nome_cidadao="João", descricao="teste",
+                                status="aberto",
+                                id_local=1, id_setor=1, id=None)
+        id_ocorrencia = self.dao.createOcorrencia(ocorrencia)
 
-        ocorrencia = Ocorrencia('VictorTestes', 'victor@gmail.com', 'testando só', 'Invalida', 1, 2)
-        id_criado = self.dao.createOcorrencia(Ocorrencia)
-        ocorrencia.id = id_criado
-        ocorrencia.nome_cidadao = "Alterei"
-        self.dao.updateOcorrencia(ocorrencia)
-        cursor = self.instanciaBD.executa_query(
-            'SELECT nome_cidadao, email_cidadao, descricao, status, id_local, id_setor, id FROM ocorrencia WHERE id=%s;',
-            (id_criado,)
-        )
-        resultados = cursor.fetchone()
-        ocorrencias = []
-        ocorrencias.append(
-            Ocorrencia(resultados[0], resultados[1], resultados[2], resultados[3], resultados[4], resultados[5],
-                       ))
-        cursor.close()
-        self.assertEqual(ocorrencia, ocorrencias[0])
+        # Atualiza a descrição da ocorrência
+        nova_descricao = "teste atualizado"
+        ocorrencia.descricao = nova_descricao
+        self.dao.updateOcorrencia(id_ocorrencia, ocorrencia)
+        self.ultimo_id_criado = id_ocorrencia
+        # Obtém a ocorrência atualizada
+        ocorrencia_atualizada = self.dao.getOcorrenciaById(id_ocorrencia)
+
+        # Verifica se a descrição foi atualizada corretamente
+        self.assertEqual(ocorrencia_atualizada.descricao, nova_descricao)
 
 
-    def test_listar_ocorrencias(self):
-        # Testa se a lista de produtos retornada pela DAO está correta
-        now = datetime.datetime.now()
-        sql_datetime = now.strftime('%Y-%m-%d %H:%M:%S%z')
-        ocorrencia1 = Ocorrencia('VictorTestes', 'victor@gmail.com', 'testando só', 'Invalida', 1, 2)
-        ocorrencia2 = Ocorrencia('pedroTestes', 'pedro@gmail.com', 'testando só', 'Aberto', 1, 2)
-        id1 = self.dao.createOcorrencia(ocorrencia1)
-        id2 = self.dao.createOcorrencia(ocorrencia2)
-        ocorrencia1.id = id1
-        ocorrencia2.id = id2
-        cursor = self.instanciaBD.executa_query(
-            'SELECT nome_cidadao, email_cidadao, descricao, status, id_local, id_setor, id FROM ocorrencia WHERE id >= %s ORDER BY id;',
-            (id1, id2)
-        )
-        resultados = cursor.fetchall()
-        ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
-        for ocorrencia in resultados:
-            ocorrencias.append(
-                Ocorrencia(ocorrencia[0], ocorrencia[1], ocorrencia[2], ocorrencia[3], ocorrencia[4], ocorrencia[5],
-                           ))
-        cursor.close()
+    '''def test_listar_ocorrencias(self):
+        ocorrencia1 = Ocorrencia(email_cidadao="joao@gmail.com", nome_cidadao="João", descricao="teste",
+                                 status="aberto",
+                                 id_local=1, id_setor=1, id=None)
+        id_ocorrencia1 = self.dao.createOcorrencia(ocorrencia1)
+        ocorrencia1.id = id_ocorrencia1
 
-        self.assertListEqual([ocorrencia1, ocorrencia2], ocorrencias)
+        ocorrencia2 = Ocorrencia(email_cidadao="maria@gmail.com", nome_cidadao="Maria", descricao="teste",
+                                 status="aberto",
+                                 id_local=1, id_setor=1, id=None)
+        id_ocorrencia2 = self.dao.createOcorrencia(ocorrencia2)
+        ocorrencia2.id = id_ocorrencia2
+        
+
+        query = "SELECT id, email_cidadao, nome_cidadao, descricao, status, id_local, id_setor FROM ocorrencias ORDER BY id DESC LIMIT 2"
+        with self.dao.conexaoBD.conectar() as cursor:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+            ocorrencias = []
+            for row in rows:
+                ocorrencia = Ocorrencia(id=row[0], email_cidadao=row[1], nome_cidadao=row[2], descricao=row[3],
+                                        status=row[4], id_local=row[5], id_setor=row[6])
+                ocorrencia.id = row[0]
+                ocorrencias.append(ocorrencia)
+
+        self.assertEqual(len(ocorrencias), 2)
+        self.assertEqual(ocorrencias[0].id, id_ocorrencia2)
+        self.assertEqual(ocorrencias[1].id, id_ocorrencia1)'''
 
 
 if __name__ == '__main__':

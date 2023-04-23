@@ -19,6 +19,7 @@ psycopg2.binary
 """
 
 import os
+from dotenv import load_dotenv, find_dotenv
 import psycopg2
 
 
@@ -33,7 +34,7 @@ class ConexaoProd:
 
     #atribui as váriaveis de conexão relacionada a base de dados e estabelece a comunicação com a base de dados
     def init_app(self):
-
+        load_dotenv(find_dotenv(".env"))
         self.conexao = psycopg2.connect(
             host=os.getenv("PROD_DB_HOST"),
             port=os.getenv("PROD_DB_PORT"),
@@ -64,9 +65,8 @@ class ConexaoProd:
      '''
     #A função executa query
     def executa_query(self, query, params=None):
-        with self.localapp.app_context():
-            conexao = self.conectar()
-            cursor = conexao.cursor()
-            cursor.execute(query, params)
-            return cursor
+        conexao = self.conectar()
+        cursor = conexao.cursor()
+        cursor.execute(query, params)
+        return cursor
 
