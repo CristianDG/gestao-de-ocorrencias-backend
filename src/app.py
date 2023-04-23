@@ -7,8 +7,8 @@ from functools import wraps
 import jwt
 import os
 from datetime import datetime as dt, timedelta
-from tipos import Usuario, Ocorrencia
-from controllers import OcorrenciaController, UsuarioController
+from tipos import Usuario, Ocorrencia, Setor
+from controllers import OcorrenciaController, UsuarioController, SetorController
 
 app = Flask(__name__)
 
@@ -103,10 +103,9 @@ def registrar_ocorrencia():
     if(not ocorrencia_json.get('descricao')
     or not ocorrencia_json.get('id_local')
     or not ocorrencia_json.get('id_setor')):
+        #TODO: Mudar
         return {'error': 'descrição inválida'}, 400
 
-    # TODO: falta validar
-    # - [ ] a existencia de todos os campos
 
 
     dados_ocorrencia = {
@@ -125,12 +124,10 @@ def encaminhar_ocorrencia(id_ocorrencia, id_setor):
     # TODO: falta validar
     # - [ ] token jwt para gestor
 
-    return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
-#    try:
-#        return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
-#    except Exception as erro:
-#        print(erro)
-#        return formatar_erro(erro)
+    try:
+        return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
+    except Exception as erro:
+        return formatar_erro(erro)
 
 
 @app.get('/login')
@@ -164,3 +161,39 @@ def registrar_usuario(id_usuario):
 @app.post('/usuarios/<id_usuario>')
 def modificar_usuario(id_usuario):
     pass
+
+
+
+@app.get('/setor')
+def listar_setores():
+    return SetorController.listar(), 200
+
+@app.post('/setor')
+def registrar_setor():
+    setor_json = request.get_json()
+
+    if(not setor_json.get('descricao')
+       or not setor_json.get('nome')):
+        #TODO: Mudar
+        return {'error': 'setor invalido'}, 400
+
+
+
+    dados_setor = {
+        'nome' : setor_json.get('nome'),
+        'descricao' : setor_json.get('descricao'),
+    }
+
+    return SetorController.criar(dados_setor), 201
+
+@app.patch('/setor/<int:id_setor>')
+def alterar_setor(id_setor):
+    setor_json = request.get_json()
+
+    dados_setor = {
+        'nome' : setor_json.get('nome'),
+        'descricao' : setor_json.get('descricao'),
+        'status': setor_json.get('status')
+    }
+
+    return SetorController.editar(id_setor, dados_setor), 200

@@ -6,7 +6,7 @@ Classe destinada para manipular os setor
 
 class SetorDAO:
     def __init__(self, dbProd):
-        self.conexaoProd = dbProd.conectar()
+        self.conexaoProd = dbProd
 
 
     def create_setor(self, nome, descricao, status):
@@ -20,6 +20,7 @@ class SetorDAO:
         return id_setor
 
     def update_setor(self, id, nome, descricao, status):
+        print(status)
         cursor = self.conexaoProd.executa_query(
             'UPDATE setor SET nome=%s, desc_responsabilidades=%s, status=%s WHERE id=%s RETURNING id',
             (nome, descricao, status, id,)
@@ -41,7 +42,7 @@ class SetorDAO:
 
     def get_setor_by_id(self, id):
         cursor = self.conexaoProd.executa_query(
-            'SELECT * FROM setor WHERE id=%s;', (id)
+            'SELECT * FROM setor WHERE id=%s;', (id,)
         )
 
         setores = cursor.fetchone()
