@@ -18,7 +18,7 @@ class TestPostgresConnection(unittest.TestCase):
         self.conexao.fechar_conexao()
 
     def test_query(self):
-        query = "SELECT * FROM solve.ocorrencia LIMIT 1;"
+        query = "SELECT * FROM ocorrencia LIMIT 1;"
         params = None
         rows = self.conexao.executa_query(query, params)
         self.assertEqual(len(rows), 1)

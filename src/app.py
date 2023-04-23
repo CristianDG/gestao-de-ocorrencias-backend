@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from psycopg2cffi import compat; compat.register()
+#from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify, request, redirect, url_for, Blueprint
 from dotenv import load_dotenv, find_dotenv
 from functools import wraps
@@ -9,6 +9,7 @@ import os
 from datetime import datetime as dt, timedelta
 from tipos import Usuario, Ocorrencia
 from controllers import OcorrenciaController, UsuarioController
+
 
 app = Flask(__name__)
 
@@ -91,6 +92,7 @@ def autenticar(gestor=False, admin=False):
 def hello_world(usuario_solicitante):
     return 'admin' if usuario_solicitante.admin else 'gestor'
 
+<<<<<<< HEAD
 @app.get("/ocorrencias")
 def listar_ocorrencias():
     # FIXME: como controlar qual é o setor?
@@ -164,3 +166,4 @@ def registrar_usuario(id_usuario):
 @app.post('/usuarios/<id_usuario>')
 def modificar_usuario(id_usuario):
     pass
+
