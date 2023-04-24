@@ -23,11 +23,11 @@ class Usuario:
     nome: str
     sobrenome: str
     status: str
-    cargo: str
+    cargo: Optional[str] = None
+    id_auth: Optional[int] = None
     id: Optional[int] = None
     admin: bool = False
     senha: Optional[str] = None
-
 
 @dataclass
 class Setor:

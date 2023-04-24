@@ -34,7 +34,7 @@ class OcorrenciaDAO:
 
 
     @staticmethod
-    def formarOcorrencia(ocorrencia):
+    def formar_ocorrencia(ocorrencia):
         return Ocorrencia(
             id=ocorrencia[0],
             email_cidadao=ocorrencia[1],
@@ -47,7 +47,7 @@ class OcorrenciaDAO:
             id_setor=ocorrencia[8]
         )
 
-    def createOcorrencia(self, ocorrencia):
+    def create_ocorrencia(self, ocorrencia):
         query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, " \
                     "id_local, id_setor) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;"
 
@@ -62,7 +62,7 @@ class OcorrenciaDAO:
 
 
     #atualiza uma ocorrência
-    def setOcorrencia(self, ocorrencia):
+    def update_ocorrencia(self, ocorrencia):
         query_sql = "UPDATE ocorrencia SET nome_cidadao = %s, email_cidadao = %s, descricao = %s, status = %s," \
                     " data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s RETURNING id;"
 
@@ -70,18 +70,21 @@ class OcorrenciaDAO:
             ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao, ocorrencia.status,
             ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor,
             ocorrencia.id))
-        id = cursor.fetchone()[0]
 
-        return id
+        id_ocorrencia = cursor.fetchone()[0]
+        cursor.close()
+        return id_ocorrencia
 
     #retorna todas as ocorrências
-    def getOcorrencias(self):
-        query_sql = "SELECT * FROM ocorrencia;"
+    def get_ocorrencias(self):
+        query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id " \
+                    "FROM ocorrencia;"
         cursor = self.conexaoBD.executa_query(query_sql, None)
         resultados_query = cursor.fetchall()
         ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
+
         for ocorrencia in resultados_query:
-            ocorrencias.append(self.formarOcorrencia(ocorrencia))
+            ocorrencias.append(self.formar_ocorrencia(ocorrencia))
         cursor.close()
         return ocorrencias
 
@@ -97,16 +100,34 @@ class OcorrenciaDAO:
         if not ocorrencia:
             return False
 
-        return self.formarOcorrencia(ocorrencia)
+        return self.formar_ocorrencia(ocorrencia)
 
 
     #retorna as ocorrências com base no id do setor
-    def getocorrenciaByIdSetor(self, id_setor):
-        query_sql = "SELECT * FROM ocorrencia WHERE id_setor = %s"
+    def get_ocorrencias_por_id_Setor(self, id_setor):
+        query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id  " \
+                    "FROM ocorrencia WHERE id_setor = %s"
         cursor = self.conexaoBD.executa_query(query_sql, id_setor)
         resultados = cursor.fetchall()
         ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
-        for ocorrencia in resultados_query:
-            ocorrencias.append(self.formarOcorrencia(ocorrencia))
+        for ocorrencia in resultados:
+            ocorrencias.append(self.formar_ocorrencia(ocorrencia))
         cursor.close()
         return ocorrencias
+
+    def get_ocorrencias_por_id(self, id):
+        query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id " \
+                    "FROM ocorrencia WHERE id = %s"
+        cursor = self.conexaoBD.executa_query(query_sql, id)
+        resultados = cursor.fetchone()
+        ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
+        for ocorrencia in resultados:
+            ocorrencias.append(
+                Ocorrencia(ocorrencia[0], ocorrencia[1], ocorrencia[2], ocorrencia[3], ocorrencia[4], ocorrencia[5], ocorrencia[6], ocorrencia[7], ocorrencia[8]))
+        cursor.close()
+        return ocorrencias
+
+
+
+
+

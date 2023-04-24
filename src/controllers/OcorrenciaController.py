@@ -7,7 +7,7 @@ ocorrenciaDAO = OcorrenciaDAO(ConexaoProd())
 
 
 def listar():
-    return ocorrenciaDAO.getOcorrencias()
+    return ocorrenciaDAO.get_ocorrencias()
 
 def encaminhar(id_ocorrencia: int, id_setor: int):
     ocorrencia = ocorrenciaDAO.getOcorrenciaById(id_ocorrencia)

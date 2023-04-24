@@ -33,7 +33,6 @@ class ConexaoProd:
 
     #atribui as váriaveis de conexão relacionada a base de dados e estabelece a comunicação com a base de dados
     def init_app(self):
-
         self.conexao = psycopg2.connect(
             host=os.getenv("PROD_DB_HOST"),
             port=os.getenv("PROD_DB_PORT"),
@@ -48,7 +47,6 @@ class ConexaoProd:
     def conectar(self):
         if self.conexao is None:
             raise ValueError("A conexão não foi iniciada com uma instância do app")
-        self.conexao.__enter__() #usado para melhorar a performance do With de executa_query. Encerrando a sessão após termino da operação
         return self.conexao
 
     def fechar_conexao(self):
@@ -69,3 +67,4 @@ class ConexaoProd:
         cursor = conexao.cursor()
         cursor.execute(query, params)
         return cursor
+
