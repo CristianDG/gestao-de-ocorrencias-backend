@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify, request, redirect, url_for, Blueprint
+from flask_cors import CORS
 from dotenv import load_dotenv, find_dotenv
 from functools import wraps
 #from hashlib import sha256
@@ -11,6 +12,7 @@ from tipos import Usuario, Ocorrencia
 from controllers import OcorrenciaController, UsuarioController
 
 app = Flask(__name__)
+CORS(app)
 
 load_dotenv(find_dotenv(".env"))
 
