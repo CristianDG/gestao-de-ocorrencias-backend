@@ -88,7 +88,7 @@ class OcorrenciaDAO:
         cursor.close()
         return ocorrencias
 
-    def getOcorrenciaById(self, id_ocorrencia):
+    def get_ocorrencia_by_id(self, id_ocorrencia):
         query_sql = "SELECT * FROM ocorrencia WHERE id = %s;"
         cursor = self.conexaoBD.executa_query(query_sql, (id_ocorrencia,))
 

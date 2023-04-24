@@ -16,10 +16,10 @@ def criar(dados_setor):
 
     setor = Setor(**dados_setor, status = 'Ativo')
 
-    id_setor = setorDAO.create_setor(
+    id_setor = setorDAO.create_setor(Setor(
         nome=setor.nome,
         descricao=setor.descricao,
-        status=setor.status)
+        status=setor.status))
 
     if not id_setor:
         raise Exception(Erro.SETOR_NAO_CRIADO)
