@@ -3,19 +3,23 @@ from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify, request, redirect, url_for, Blueprint
 from dotenv import load_dotenv, find_dotenv
 from functools import wraps
-#from hashlib import sha256
+from hashlib import sha256
 import jwt
 import os
 from datetime import datetime as dt, timedelta
 from tipos import Usuario, Ocorrencia, Setor
-from controllers import OcorrenciaController, UsuarioController, SetorController
+from controllers import (
+    OcorrenciaController,
+    UsuarioController,
+    SetorController,
+    GestorController)
 
 
 app = Flask(__name__)
 
 load_dotenv(find_dotenv(".env"))
 
-
+@app.errorhandler(Exception)
 def formatar_erro(erro):
     if os.getenv('DEBUG'):
         print(erro)
@@ -29,12 +33,29 @@ def formatar_erro(erro):
         return {'error': str(e)}, 500
 
 
+def verificar_existencia(campos: list[str], dic: dict) -> bool:
+    res = True
+    erro = None
+    for campo in campos:
+        res = (
+            res and campo in dic
+            and dic[campo] is not None
+            and dic[campo] != '')
+
+        if not res:
+            erro = f'campo {campo} inválido ou não encontrado'
+            break
+
+    return erro
+
 def encode(dados):
     return jwt.encode(dados, os.getenv('JWT_SECRET'), algorithm='HS256')
 
 def decode(dados):
     return jwt.decode(dados, os.getenv('JWT_SECRET'), algorithms=["HS256"])
 
+def criptografar(senha):
+    return sha256(bytes(senha ,'utf8')).hexdigest()
 
 def autenticar(gestor=False, admin=False):
 
@@ -60,10 +81,12 @@ def autenticar(gestor=False, admin=False):
                 return erro
 
             # TODO: controlar se o usuário é gestor ou adm
+            # FIXME: integrar com o banco de auth
             if not UsuarioController.procurarPorId(id_usuario):
                 return erro
 
             # TODO: retornar o usuario que chamou o endpoint
+            # FIXME: integrar com o banco de auth
 
             usuario = Usuario(email="sla@email.com", id=id_usuario)
 
@@ -87,11 +110,9 @@ def listar_ocorrencias():
 def registrar_ocorrencia():
     ocorrencia_json = request.get_json()
 
-    if(not ocorrencia_json.get('descricao')
-    or not ocorrencia_json.get('id_local')
-    or not ocorrencia_json.get('id_setor')):
-        #TODO: Mudar
-        return {'error': 'descrição inválida'}, 400
+    erro = verificar_existencia(['descricao', 'id_local', 'id_setor'], ocorrencia_json)
+    if erro:
+        return {'error': erro}, 403
 
 
 
@@ -111,10 +132,7 @@ def encaminhar_ocorrencia(id_ocorrencia, id_setor):
     # TODO: falta validar
     # - [ ] token jwt para gestor
 
-    try:
-        return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
-    except Exception as erro:
-        return formatar_erro(erro)
+    return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
 
 
 @app.get('/login')
@@ -127,26 +145,37 @@ def login():
 
         return {'error': 'email ou senha incorretos'}, 400
 
-    usuario = UsuarioController.procurarPorLogin(usuario_json['email'], usuario_json['senha'])
+    usuario = UsuarioController.procurarPorLogin(usuario_json['email'], criptografar(usuario_json['senha']))
     token = encode({'id': usuario.id, 'data': dt.now().timestamp()})
 
     return { 'token': token }, 200
 
 
-@app.get('/usuarios')
-def listar_usuarios():
+@app.get('/gestor')
+def listar_gestores():
     pass
 
-@app.get('/usuarios/<id_usuario>')
-def informacoes_usuario(id_usuario):
+@app.get('/gestor/<int:id_gestor>')
+def informacoes_gestor(id_gestor):
     pass
 
-@app.post('/usuarios/<id_usuario>')
-def registrar_usuario(id_usuario):
-    pass
+@app.post('/gestor')
+def registrar_gestor():
+    gestor_json = request.get_json()
 
-@app.post('/usuarios/<id_usuario>')
-def modificar_usuario(id_usuario):
+    erro = verificar_existencia(
+        ['email', 'senha', 'nome', 'sobrenome', 'status', 'id_setor'], gestor_json)
+
+    if erro:
+        return {'error': erro}, 403
+
+    gestor_json['senha'] = criptografar(gestor_json['senha'])
+
+    return GestorController.registrar(gestor_json), 201
+
+
+@app.post('/gestor/<int:id_gestor>')
+def modificar_gestor(id_gestor):
     pass
 
 
@@ -184,3 +213,7 @@ def alterar_setor(id_setor):
     }
 
     return SetorController.editar(id_setor, dados_setor), 200
+
+@app.get('/setor/<int:id_setor>/problemas')
+def listar_problemas_do_setor(id_setor):
+    return SetorController.listar_problemas(id_setor), 200

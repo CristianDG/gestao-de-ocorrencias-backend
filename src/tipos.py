@@ -28,6 +28,7 @@ class Usuario:
     id: Optional[int] = None
     admin: bool = False
     senha: Optional[str] = None
+    setor: Optional[int] = None
 
 @dataclass
 class Setor:
@@ -37,3 +38,5 @@ class Setor:
     id: Optional[int] = None
 
     dict = asdict
+
+
