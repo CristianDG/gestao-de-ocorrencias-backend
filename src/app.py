@@ -135,7 +135,7 @@ def encaminhar_ocorrencia(id_ocorrencia, id_setor):
 #        return formatar_erro(erro)
 
 
-@app.get('/login')
+@app.post('/login')
 def login():
     usuario_json = request.get_json()
 
