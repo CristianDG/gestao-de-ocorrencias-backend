@@ -11,26 +11,27 @@ correção de bugs na criação das classes e alteração nos métodos para uma 
 Modificado 14/04 por Victor C. Alterações:
 Alteração da nomenclatura das funções para o padrão get, set, delete, etc.
 """
-
-
-class Ocorrencia:
-    def __init__(self, nome_cidadao, email_cidadao, descricao, status, id_local, id_setor, id=None, data_criacao=None, data_resolucao=None,
-                   ):
-
-        self.email_cidadao = email_cidadao
-        self.nome_cidadao = nome_cidadao
-        self.descricao = descricao
-        self.status = status
-        self.data_criacao = data_criacao
-        self.data_resolucao = data_resolucao
-        self.id_local = id_local
-        self.id_setor = id_setor
-        self.id = id
+from tipos import Ocorrencia
 
 class OcorrenciaDAO:
 
     def __init__(self, conexao):
         self.conexaoBD = conexao
+
+
+    @staticmethod
+    def formarOcorrencia(ocorrencia):
+        return Ocorrencia(
+            id=ocorrencia[0],
+            email_cidadao=ocorrencia[1],
+            nome_cidadao=ocorrencia[2],
+            descricao=ocorrencia[3],
+            status=ocorrencia[4],
+            data_criacao=ocorrencia[5],
+            data_resolucao=ocorrencia[6],
+            id_local=ocorrencia[7],
+            id_setor=ocorrencia[8]
+        )
 
     def createOcorrencia(self, ocorrencia):
         query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, " \
@@ -38,8 +39,10 @@ class OcorrenciaDAO:
 
 
         cursor = self.conexaoBD.executa_query(query_sql, (
-        ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao, ocorrencia.status,
-        ocorrencia.id_local, ocorrencia.id_setor))
+
+            ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao,
+            ocorrencia.status, ocorrencia.id_local, ocorrencia.id_setor)
+                                              )
 
         id = cursor.fetchone()[0]
         cursor.close()
@@ -65,14 +68,26 @@ class OcorrenciaDAO:
         query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id " \
                     "FROM ocorrencia;"
         cursor = self.conexaoBD.executa_query(query_sql, None)
-        resultados = cursor.fetchall()
+        resultados_query = cursor.fetchall()
         ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
-        for ocorrencia in resultados:
-            ocorrencias.append(
-                Ocorrencia(ocorrencia[0], ocorrencia[1], ocorrencia[2], ocorrencia[3], ocorrencia[4], ocorrencia[5],
-                           ocorrencia[6], ocorrencia[7], ocorrencia[8]))
+        for ocorrencia in resultados_query:
+            ocorrencias.append(self.formarOcorrencia(ocorrencia))
         cursor.close()
         return ocorrencias
+
+    def getOcorrenciaById(self, id_ocorrencia):
+        query_sql = "SELECT * FROM ocorrencia WHERE id = %s;"
+        cursor = self.conexaoBD.executa_query(query_sql, (id_ocorrencia,))
+
+        if cursor is None:
+            return False
+
+        ocorrencia = cursor.fetchone()
+
+        if not ocorrencia:
+            return False
+
+        return self.formarOcorrencia(ocorrencia)
 
 
     #retorna as ocorrências com base no id do setor
@@ -83,8 +98,7 @@ class OcorrenciaDAO:
         resultados = cursor.fetchall()
         ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
         for ocorrencia in resultados:
-            ocorrencias.append(
-                Ocorrencia(ocorrencia[0], ocorrencia[1], ocorrencia[2], ocorrencia[3], ocorrencia[4], ocorrencia[5], ocorrencia[6], ocorrencia[7], ocorrencia[8]))
+            ocorrencias.append(self.formarOcorrencia(ocorrencia))
         cursor.close()
         return ocorrencias
 
@@ -92,10 +106,9 @@ class OcorrenciaDAO:
         query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id " \
                     "FROM ocorrencia WHERE id = %s"
         cursor = self.conexaoBD.executa_query(query_sql, id)
-        resultados = cursor.fetchone()
+        resultados_query = cursor.fetchone()
         ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
-        for ocorrencia in resultados:
-            ocorrencias.append(
-                Ocorrencia(ocorrencia[0], ocorrencia[1], ocorrencia[2], ocorrencia[3], ocorrencia[4], ocorrencia[5], ocorrencia[6], ocorrencia[7], ocorrencia[8]))
+        for ocorrencia in resultados_query:
+            ocorrencias.append(self.formarOcorrencia(ocorrencia))
         cursor.close()
         return ocorrencias

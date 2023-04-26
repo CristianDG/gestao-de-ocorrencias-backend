@@ -100,5 +100,4 @@ class UsuarioDAO:
             'DELETE FROM users WHERE id = %s',
             (user_id,)
         )
-
         cursor.close()
