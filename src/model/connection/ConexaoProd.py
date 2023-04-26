@@ -20,6 +20,7 @@ psycopg2.binary
 
 import os
 import psycopg2
+import psycopg2.extras
 
 
 class ConexaoProd:
@@ -64,7 +65,7 @@ class ConexaoProd:
     #A função executa query
     def executa_query(self, query, params=None):
         conexao = self.conectar()
-        cursor = conexao.cursor()
+        cursor = conexao.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
         cursor.execute(query, params)
         return cursor
 

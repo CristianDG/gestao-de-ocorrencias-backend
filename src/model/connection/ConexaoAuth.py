@@ -38,7 +38,7 @@ class ConexaoAuth:
 
     def executa_query(self, query, params=None):
         conexao = self.conectar()
-        cursor = conexao.cursor()
+        cursor = conexao.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
         cursor.execute(query, params)
         return cursor
 
