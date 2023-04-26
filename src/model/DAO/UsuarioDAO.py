@@ -31,17 +31,7 @@ class UsuarioDAO:
 
     @staticmethod
     def formarUsuario(usuario):
-        return Usuario(
-            id_auth=usuario[0],
-            id_prod=usuario[1],
-            email=usuario[2],
-            nome=usuario[3],
-            sobrenome=usuario[4],
-            status=usuario[5],
-            cargo=usuario[6],
-            senha=usuario[7],
-
-        )
+        return Usuario(**usuario)
 
     def create_usuario(self, usuario):
         # cria o usuário na base de dados de autênticação e retorna o seu id para ser usado abaixo

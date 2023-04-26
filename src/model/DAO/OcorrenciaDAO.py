@@ -35,17 +35,7 @@ class OcorrenciaDAO:
 
     @staticmethod
     def formar_ocorrencia(ocorrencia):
-        return Ocorrencia(
-            id=ocorrencia[0],
-            email_cidadao=ocorrencia[1],
-            nome_cidadao=ocorrencia[2],
-            descricao=ocorrencia[3],
-            status=ocorrencia[4],
-            data_criacao=ocorrencia[5],
-            data_resolucao=ocorrencia[6],
-            id_local=ocorrencia[7],
-            id_setor=ocorrencia[8]
-        )
+        return Ocorrencia(**ocorrencia)
 
     def create_ocorrencia(self, ocorrencia):
         query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, " \

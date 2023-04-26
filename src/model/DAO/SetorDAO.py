@@ -16,11 +16,12 @@ class SetorDAO:
 
     @staticmethod
     def formar_setor(setor):
+        print(setor)
         return Setor(
-            id=setor[0],
-            nome=setor[1],
-            descricao=setor[2],
-            status=setor[3],
+            id=setor['id'],
+            nome=setor['nome'],
+            descricao=setor['desc_responsabilidades'],
+            status=setor['status'],
         )
 
     def create_setor(self, setor):
