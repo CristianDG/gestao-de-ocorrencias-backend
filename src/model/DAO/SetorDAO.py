@@ -16,7 +16,6 @@ class SetorDAO:
 
     @staticmethod
     def formar_setor(setor):
-        print(setor)
         return Setor(
             id=setor['id'],
             nome=setor['nome'],
