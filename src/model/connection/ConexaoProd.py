@@ -33,7 +33,6 @@ class ConexaoProd:
 
     #atribui as váriaveis de conexão relacionada a base de dados e estabelece a comunicação com a base de dados
     def init_app(self):
-
         self.conexao = psycopg2.connect(
             host=os.getenv("PROD_DB_HOST"),
             port=os.getenv("PROD_DB_PORT"),
@@ -68,3 +67,4 @@ class ConexaoProd:
         cursor = conexao.cursor()
         cursor.execute(query, params)
         return cursor
+

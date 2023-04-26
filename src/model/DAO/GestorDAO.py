@@ -8,7 +8,7 @@ Classe DAO para manipulação dos gestores
 class GestorDAO:
 
     def __init__(self, dbProd, usuarioDAO):
-        self.conexaoProd = dbProd.conectar()
+        self.conexaoProd = dbProd
         self.usuarioDAO = usuarioDAO
 
 
@@ -16,7 +16,7 @@ class GestorDAO:
     #e logo após cria a linha na tabela de gestores
     def create_gestor(self, email, senha, nome, sobrenome, status, setor):
 
-        id_usuario = (self.usuarioDAO.create_user(email, senha, nome, sobrenome, status))['prod_id']
+        id_usuario = (self.usuarioDAO.create_usuario(email, senha, nome, sobrenome, status))['prod_id']
 
         cursor = self.conexaoProd.executa_query(
             'INSERT INTO gestor_ocorrencia (id, setor_atuacao) VALUES (%s, %s) RETURNING id;',

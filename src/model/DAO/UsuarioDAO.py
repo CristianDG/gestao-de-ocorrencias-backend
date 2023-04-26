@@ -12,23 +12,42 @@ deste modo, destinei está DAO para fazer o controle das duas bases de dados ao 
 
 '''
 
+from tipos import Usuario
+
 
 class UsuarioDAO:
 
     def __init__(self, dbAuth, dbProd):
-        self.conexaoAuth = dbAuth.conectar()
-        self.conexaoProd = dbProd.conectar()
+        self.conexaoAuth = dbAuth
+        self.conexaoProd = dbProd
 
     def commit(self):
         self.conexaoProd.commit()
         self.conexaoAuth.commit()
 
-    def create_user(self, email, senha, nome, sobrenome, status):
+    def fechar_conexao(self):
+        self.conexaoAuth.fecha_conexao()
+        self.conexaoProd.fechar_conexao()
 
+    @staticmethod
+    def formarUsuario(usuario):
+        return Usuario(
+            id_auth=usuario[0],
+            id_prod=usuario[1],
+            email=usuario[2],
+            nome=usuario[3],
+            sobrenome=usuario[4],
+            status=usuario[5],
+            cargo=usuario[6],
+            senha=usuario[7],
+
+        )
+
+    def create_usuario(self, usuario):
         # cria o usuário na base de dados de autênticação e retorna o seu id para ser usado abaixo
         cursorAuth = self.conexaoAuth.executa_query(
             'INSERT INTO users (email, password) VALUES (%s, %s) RETURNING id;',
-            (email, senha)
+            (usuario.email, usuario.senha)
         )
 
         usuario_auth_id = cursorAuth.fetchone()[0]
@@ -37,39 +56,50 @@ class UsuarioDAO:
         # cria o usuário na base de dados de produção retornando seu ID
         cursorProd = self.conexaoProd.executa_query(
             "INSERT INTO usuario (nome, sobrenome, email, status) VALUES (%s, %s, %s, %s) RETURNING id;",
-            (nome, sobrenome, email, status)
+            (usuario.nome, usuario.sobrenome, usuario.email, usuario.status)
         )
         usuario_prod_id = cursorProd.fetchone()[0]
+        cursorProd.close()
 
         # utiliza os ids retornados anteriormente para relacionar na tabela que mapeia a BD de autênticação com a de prod
-        cursorProd.executa_query(
+        cursorProd = self.conexaoProd.executa_query(
             "INSERT INTO usuario_auth_map (id_auth, id_usuario) VALUES (%s, %s);",
             (usuario_auth_id, usuario_prod_id)
         )
         cursorProd.close()
 
 
-        return {'prod_id': usuario_prod_id, 'auth_id': usuario_auth_id}
+        return usuario_prod_id
 
 
 
-    def get_user_auth(self, user_id):
-        cursor = self.conexaoAuth.executa_query(
-            'SELECT email, criado_em FROM users WHERE id = %s;',
-            (user_id,)
+
+    def get_usuario_prod_map_auth(self, id):#retorna o id do banco de autênticação de um usuário do banco de produção
+        cursor = self.conexaoProd.executa_query(
+            'SELECT id_auth FROM usuario_auth_map WHERE id_usuario =%s',
+            (id,)
+        )
+        id_auth = cursor.fetchone()[0]
+        cursor.close()
+
+        return id_auth
+
+
+    def get_usuario_auth_map_prod(self, id):#retorna o id do banco de produção de um usuário do banco de autênticação
+        cursor = self.conexaoProd.executa_query(
+            'SELECT id_usuario FROM usuario_auth_map WHERE id_auth=%s',
+            (id,)
         )
 
-        row = cursor.fetchone()
+        id_prod = cursor.fetchone()[0]
         cursor.close()
-        if row:
-            return {'id': user_id, 'email': row[0], 'criado_em': row[1]}
-        else:
-            return None
 
-    def get_user_prod(self, id):
+        return id_prod
+
+    def get_user_prod(self, id):#retorna um usuário do banco de produção
         cursor = self.conexaoProd.executa_query(
-            "SELECT id , nome, email, matricula, status, setor FROM (SELECT u.id, u.nome, u.email, u.matricula, "
-            "u.status, go.setor_atuacao as setor FROM gestor_ocorrencia as go RIGHT JOIN usuario as u on go.id = u.id "
+            "SELECT id , nome, sobrenome, email, matricula, status "
+            "FROM (SELECT u.id, u.nome, u.sobrenome, u.email, u.matricula, u.status, go.setor_atuacao as setor FROM gestor_ocorrencia as go RIGHT JOIN usuario as u on go.id = u.id "
             "WHERE u.id = %s) as dados_gestor",
             (id,)
         )
@@ -77,27 +107,64 @@ class UsuarioDAO:
         linha = cursor.fetchone()
         cursor.close()
         if linha:
-            return {'id': linha[0], 'nome': linha[1], 'email': linha[2], 'matricula': linha[3], 'status': linha[4], 'setor': linha[5]}
+            return {'id_prod': linha[0], 'nome': linha[1], 'sobrenome': linha[2], 'email': linha[3], "status": linha[5]}
 
-
-    def update_user_auth(self, user_id, email, senha):
+    def get_user_auth(self, user_id):#retorna um usuário do banco de autênticação
         cursor = self.conexaoAuth.executa_query(
-            'UPDATE users SET email = %s, password = %s WHERE id = %s;',
-            (email, senha, user_id)
-        )
-        cursor.close()
-
-    def update_user_prod(self, id, nome, sobrenome, matricula, email, status):
-        cursor = self.conexaoProd.executa_query(
-            'UPDATE usuario SET nome = %s, sobrenome = %s, matricula = %s, email = %s, status = %s WHERE id = %s;',
-            (nome, sobrenome, None, email, status, id)
-        )
-
-        cursor.close()
-
-    def delete_user(self, user_id):
-        cursor = self.conexaoAuth.executa_query(
-            'DELETE FROM users WHERE id = %s',
+            'SELECT cargo FROM users WHERE id = %s;',
             (user_id,)
         )
+
+        row = cursor.fetchone()
         cursor.close()
+        if row:
+            return {'id_auth': user_id, 'cargo': row[0]} #id_auth, email e cargo respectivamento
+        else:
+            return None
+
+    def get_user(self, id_prod):#retorna um objeto do tipo usuário que contém as informações dos dois bancos de dados com exceção da senha
+        usuario = self.get_user_prod(id_prod)
+        usuario_auth= self.get_user_auth(self.get_usuario_prod_map_auth(id_prod))
+
+
+        usuario_final = [usuario['id_prod'], usuario_auth['id_auth'], usuario['email'],
+                         usuario['nome'], usuario['sobrenome'], usuario['status'],usuario_auth['cargo'], None]
+
+        return self.formarUsuario(usuario_final)
+
+    def update_user_auth(self, usuario):#atualiza os dados de um usuário do banco de autênticação
+        cursor = self.conexaoAuth.executa_query(
+            'UPDATE users SET email = %s, password = %s WHERE id = %s;',
+            (usuario.email, usuario.senha, usuario.id_auth)
+        )
+        cursor.close()
+
+    def update_user_prod(self, usuario):#atualiza os dados de um usuário do banco de regra de negócio
+        cursor = self.conexaoProd.executa_query(
+            'UPDATE usuario SET nome = %s, sobrenome = %s, email = %s, status = %s WHERE id = %s RETURNING id;',
+            (usuario.nome, usuario.sobrenome, usuario.email, usuario.status, usuario.id_prod)
+        )
+        id_alterado = cursor.fetchone()[0]
+        cursor.close()
+        return id_alterado
+
+    def update_user(self, usuario):#atualiza os dados de um usuário das duas bases de dados
+        id_alterado = self.update_user_prod(usuario)
+        self.update_user_auth(usuario)
+
+        return id_alterado
+
+    def delete_user(self, id_prod):#deleta um usuário com base no id do banco de produção, deletando das duas bases de dados.
+        id_Auth = self.get_usuario_prod_map_auth(id_prod)
+
+        cursorProd = self.conexaoProd.executa_query(
+            'DELETE FROM usuario WHERE id =%s',
+            (id_Auth,)
+        )
+        cursorProd.close()
+
+        cursorAuth = self.conexaoAuth.executa_query(
+            'DELETE FROM users WHERE id = %s',
+            (id_Auth,)
+        )
+        cursorAuth.close()

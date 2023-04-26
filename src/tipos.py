@@ -20,6 +20,23 @@ class Ocorrencia:
 @dataclass
 class Usuario:
     email: str
+    nome: str
+    sobrenome: str
+    status: str
+    cargo: Optional[str] = None
+    id_auth: Optional[int] = None
     id: Optional[int] = None
     admin: bool = False
     senha: Optional[str] = None
+    setor: Optional[int] = None
+
+@dataclass
+class Setor:
+    nome: str
+    descricao: str
+    status: str
+    id: Optional[int] = None
+
+    dict = asdict
+
+

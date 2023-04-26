@@ -6,8 +6,8 @@ name = "pypi"
 [packages]
 flask = "*"
 python-dotenv = "*"
-"psycopg2.binary" = "*"
-psycopg2cffi = "*"
+psycopg2-binary = "*"
+#psycopg2cffi = "*"
 pyjwt = "*"
 flask-cors= "*"
 
