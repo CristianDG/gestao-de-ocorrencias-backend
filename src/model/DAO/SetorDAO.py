@@ -67,3 +67,19 @@ class SetorDAO:
         cursor.close()
 
         return setor
+
+    def get_id_setor(self, id_problema):
+        cursor = self.conexaoProd.executa_query(
+            'SELECT id_setor FROM problema WHERE id=%s',
+            (id_problema,)
+        )
+
+        id_setor = cursor.fetchone()[0]
+        return id_setor
+
+    def get_id_problemas(self, id_setor):
+        cursor = self.conexaoProd.executa_query(
+            'SELECT id_problema FROM problema WHERE id_setor=%s',
+            (id_setor,)
+        )
+

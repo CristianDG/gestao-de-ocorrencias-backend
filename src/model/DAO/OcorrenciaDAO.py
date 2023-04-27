@@ -39,12 +39,12 @@ class OcorrenciaDAO:
 
     def create_ocorrencia(self, ocorrencia):
         query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, " \
-                    "id_local, id_setor) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;"
+                    "id_local, id_setor, id_problema) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id;"
 
 
         cursor = self.conexaoBD.executa_query(query_sql, (
-            ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao,
-            ocorrencia.status, ocorrencia.id_local, ocorrencia.id_setor))
+            ocorrencia.email_cidadao, ocorrencia.descricao,
+            ocorrencia.status, ocorrencia.id_local, ocorrencia.id_setor, ocorrencia.id_problema))
 
         id = cursor.fetchone()[0]
         cursor.close()
@@ -53,17 +53,18 @@ class OcorrenciaDAO:
 
     #atualiza uma ocorrência
     def update_ocorrencia(self, ocorrencia):
-        query_sql = "UPDATE ocorrencia SET nome_cidadao = %s, email_cidadao = %s, descricao = %s, status = %s," \
+        query_sql = "UPDATE ocorrencia SET id_problema = %s, email_cidadao = %s, descricao = %s, status = %s," \
                     " data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s RETURNING id;"
 
         cursor = self.conexaoBD.executa_query(query_sql, (
-            ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao, ocorrencia.status,
-            ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor,
-            ocorrencia.id))
+            ocorrencia.id_problema, ocorrencia.email_cidadao, ocorrencia.descricao, ocorrencia.status,
+            ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor, ocorrencia.id, )
+        )
 
         id_ocorrencia = cursor.fetchone()[0]
         cursor.close()
         return id_ocorrencia
+
 
     #retorna todas as ocorrências
     def get_ocorrencias(self):
@@ -117,7 +118,17 @@ class OcorrenciaDAO:
         cursor.close()
         return ocorrencias
 
-
-
+    def get_locais(self):
+        cursor = self.conexaoBD.executa_query(
+            'SELECT * FROM local',
+            ()
+        )
+        if cursor is not None:
+            resultado = cursor.fetchall()
+            cursor.close()
+            return resultado
+        else:
+            cursor.close()
+            return None
 
 

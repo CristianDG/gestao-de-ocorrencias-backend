@@ -7,9 +7,9 @@ class Ocorrencia:
     descricao: str
     id_local: int
     id_setor: int
+    id_problema: int
     status: Optional[str]
     email_cidadao: Optional[str]
-    nome_cidadao: Optional[str]
     id: Optional[int]
     data_criacao: datetime.datetime = datetime.datetime.now()
     data_resolucao: Optional[datetime.datetime] = None
@@ -38,5 +38,7 @@ class Setor:
     id: Optional[int] = None
 
     dict = asdict
+
+
 
 
