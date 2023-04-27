@@ -1,9 +1,11 @@
 from tipos import Ocorrencia
 from erros import ErroController as Erro
 from model.DAO.OcorrenciaDAO import OcorrenciaDAO
+from model.DAO.SetorDAO import SetorDAO
 from model.connection.ConexaoProd import ConexaoProd
 
 ocorrenciaDAO = OcorrenciaDAO(ConexaoProd())
+setorDAO = SetorDAO(ConexaoProd())
 
 
 def listar():
@@ -26,10 +28,17 @@ def registrar(dados_ocorrencia: Ocorrencia) -> Ocorrencia:
     # - [ ] se existe o local
     # - [ ] se existe o setor
 
-    ocorrencia = Ocorrencia(**dados_ocorrencia, status='Aberto', id=None)
+
+    id_setor = setorDAO.get_id_setor(dados_ocorrencia['id_problema'])
+
+    if not id_setor:
+        raise Exception(Erro.OCORRENCIA_NAO_CRIADA)
+
+    ocorrencia = Ocorrencia(**dados_ocorrencia, status='Aberto', id=None, id_setor=id_setor)
+
     id = ocorrenciaDAO.create_ocorrencia(ocorrencia)
     if not id:
-        return Exception(Erro.OCORRENCIA_NAO_CRIADA)
+        raise Exception(Erro.OCORRENCIA_NAO_CRIADA)
 
     ocorrencia.id = id
     return ocorrencia.dict()
