@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#from psycopg2cffi import compat; compat.register()
+from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify, request, redirect, url_for, Blueprint
 from flask_cors import CORS
 from dotenv import load_dotenv, find_dotenv
@@ -28,14 +28,13 @@ if os.getenv('DEBUG'):
 def formatar_erro(erro):
     if os.getenv('DEBUG'):
         print(erro)
-        return {'error': str(e)}, 500
 
     try:
         return ({'error': erro.args[0].value[0]}, erro.args[0].value[1])
     except Exception as e:
         if not os.getenv('DEBUG'):
             return {'error': 'internal server error'}, 500
-        return {'error': str(e)}, 500
+        return {'error': str(erro)}, 500
 
 
 def verificar_existencia(campos: list[str], dic: dict) -> bool:
@@ -123,7 +122,6 @@ def registrar_ocorrencia():
 
     dados_ocorrencia = {
         'email_cidadao' : ocorrencia_json.get('email_cidadao'),
-        'nome_cidadao' : ocorrencia_json.get('nome_cidadao'),
         'descricao' : ocorrencia_json['descricao'],
         'id_local' : ocorrencia_json['id_local'],
         'id_setor' : ocorrencia_json['id_setor']
