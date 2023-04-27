@@ -21,17 +21,20 @@ CORS(app)
 
 load_dotenv(find_dotenv(".env"))
 
+if os.getenv('DEBUG'):
+    print("#### DEBUG ATIVO ####")
+
 @app.errorhandler(Exception)
 def formatar_erro(erro):
     if os.getenv('DEBUG'):
         print(erro)
+        return {'error': str(e)}, 500
 
     try:
         return ({'error': erro.args[0].value[0]}, erro.args[0].value[1])
     except Exception as e:
         if not os.getenv('DEBUG'):
             return {'error': 'internal server error'}, 500
-
         return {'error': str(e)}, 500
 
 
