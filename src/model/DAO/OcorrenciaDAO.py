@@ -14,18 +14,6 @@ Alteração da nomenclatura das funções para o padrão get, set, delete, etc.
 
 from tipos import Ocorrencia
 
-#class Ocorrencia:
-#    def __init__(self, nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao,
-#                    id_local, id_setor):
-#
-#        self.email_cidadao = email_cidadao
-#        self.nome_cidadao = nome_cidadao
-#        self.descricao = descricao
-#        self.status = status
-#        self.data_criacao = data_criacao
-#        self.data_resolucao = data_resolucao
-#        self.id_local = id_local
-#        self.id_setor = id_setor
 
 class OcorrenciaDAO:
 
@@ -38,36 +26,37 @@ class OcorrenciaDAO:
         return Ocorrencia(**ocorrencia)
 
     def create_ocorrencia(self, ocorrencia):
-        query_sql = "INSERT INTO ocorrencia (email_cidadao, nome_cidadao, descricao, status, " \
-                    "id_local, id_setor) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;"
+        query_sql = "INSERT INTO ocorrencia (email_cidadao, descricao, status, " \
+                    "id_local, id_setor, id_problema) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;"
 
 
         cursor = self.conexaoBD.executa_query(query_sql, (
-            ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao,
-            ocorrencia.status, ocorrencia.id_local, ocorrencia.id_setor))
+            ocorrencia.email_cidadao, ocorrencia.descricao,
+            ocorrencia.status, ocorrencia.id_local, ocorrencia.id_setor, ocorrencia.id_problema))
 
-        id = cursor.fetchone()[0]
+        id = cursor.fetchone()['id']
         cursor.close()
         return id
 
 
     #atualiza uma ocorrência
     def update_ocorrencia(self, ocorrencia):
-        query_sql = "UPDATE ocorrencia SET nome_cidadao = %s, email_cidadao = %s, descricao = %s, status = %s," \
+        query_sql = "UPDATE ocorrencia SET id_problema = %s, email_cidadao = %s, descricao = %s, status = %s," \
                     " data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s RETURNING id;"
 
         cursor = self.conexaoBD.executa_query(query_sql, (
-            ocorrencia.email_cidadao, ocorrencia.nome_cidadao, ocorrencia.descricao, ocorrencia.status,
-            ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor,
-            ocorrencia.id))
+            ocorrencia.id_problema, ocorrencia.email_cidadao, ocorrencia.descricao, ocorrencia.status,
+            ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor, ocorrencia.id, )
+        )
 
-        id_ocorrencia = cursor.fetchone()[0]
+        id_ocorrencia = cursor.fetchone()['id']
         cursor.close()
         return id_ocorrencia
 
+
     #retorna todas as ocorrências
     def get_ocorrencias(self):
-        query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id " \
+        query_sql = "SELECT email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id_problema, id " \
                     "FROM ocorrencia;"
         cursor = self.conexaoBD.executa_query(query_sql, None)
         resultados_query = cursor.fetchall()
@@ -95,7 +84,7 @@ class OcorrenciaDAO:
 
     #retorna as ocorrências com base no id do setor
     def get_ocorrencias_por_id_Setor(self, id_setor):
-        query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id  " \
+        query_sql = "SELECT email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id_problema, id  " \
                     "FROM ocorrencia WHERE id_setor = %s"
         cursor = self.conexaoBD.executa_query(query_sql, id_setor)
         resultados = cursor.fetchall()
@@ -106,18 +95,27 @@ class OcorrenciaDAO:
         return ocorrencias
 
     def get_ocorrencias_por_id(self, id):
-        query_sql = "SELECT nome_cidadao, email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id " \
+        query_sql = "SELECT email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id_problema, id " \
                     "FROM ocorrencia WHERE id = %s"
         cursor = self.conexaoBD.executa_query(query_sql, id)
         resultados = cursor.fetchone()
         ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
         for ocorrencia in resultados:
-            ocorrencias.append(
-                Ocorrencia(ocorrencia[0], ocorrencia[1], ocorrencia[2], ocorrencia[3], ocorrencia[4], ocorrencia[5], ocorrencia[6], ocorrencia[7], ocorrencia[8]))
+            ocorrencias.append(self.formar_ocorrencia(ocorrencia))
         cursor.close()
         return ocorrencias
 
-
-
+    def get_locais(self):
+        cursor = self.conexaoBD.executa_query(
+            'SELECT * FROM local',
+            ()
+        )
+        if cursor is not None:
+            resultado = cursor.fetchall()
+            cursor.close()
+            return resultado
+        else:
+            cursor.close()
+            return None
 
 
