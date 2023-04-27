@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from psycopg2cffi import compat; compat.register()
+#from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify, request, redirect, url_for, Blueprint
 from flask_cors import CORS
 from dotenv import load_dotenv, find_dotenv
@@ -27,14 +27,12 @@ if os.getenv('DEBUG'):
 @app.errorhandler(Exception)
 def formatar_erro(erro):
     if os.getenv('DEBUG'):
-        print(erro)
+        raise erro
 
     try:
         return ({'error': erro.args[0].value[0]}, erro.args[0].value[1])
     except Exception as e:
-        if not os.getenv('DEBUG'):
-            return {'error': 'internal server error'}, 500
-        return {'error': str(erro)}, 500
+        return {'error': 'internal server error'}, 500
 
 
 def verificar_existencia(campos: list[str], dic: dict) -> bool:
@@ -114,7 +112,7 @@ def listar_ocorrencias():
 def registrar_ocorrencia():
     ocorrencia_json = request.get_json()
 
-    erro = verificar_existencia(['descricao', 'id_local', 'id_setor'], ocorrencia_json)
+    erro = verificar_existencia(['descricao', 'id_local', 'id_problema'], ocorrencia_json)
     if erro:
         return {'error': erro}, 403
 
@@ -124,7 +122,7 @@ def registrar_ocorrencia():
         'email_cidadao' : ocorrencia_json.get('email_cidadao'),
         'descricao' : ocorrencia_json['descricao'],
         'id_local' : ocorrencia_json['id_local'],
-        'id_setor' : ocorrencia_json['id_setor']
+        'id_problema': ocorrencia_json['id_problema']
     }
 
     return OcorrenciaController.registrar(dados_ocorrencia), 201

@@ -29,7 +29,7 @@ class SetorDAO:
             (setor.nome, setor.descricao, setor.status,)
         )
 
-        id_setor = cursor.fetchone()[0]
+        id_setor = cursor.fetchone()['id']
         cursor.close()
         return id_setor
 
@@ -39,7 +39,7 @@ class SetorDAO:
             (setor.nome, setor.descricao, setor.status, setor.id,)
         )
 
-        id_setor = cursor.fetchone()[0]
+        id_setor = cursor.fetchone()['id']
         cursor.close()
 
         return id_setor
@@ -73,7 +73,7 @@ class SetorDAO:
             (id_problema,)
         )
 
-        id_setor = cursor.fetchone()[0]
+        id_setor = cursor.fetchone()['id_setor']
         return id_setor
 
     def get_id_problemas(self, id_setor):
