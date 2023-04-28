@@ -53,8 +53,16 @@ def listar():
         setores.append(setor)
     return setores
 
-def listar_problemas(id_setor):
+def listar_problemas_do_setor(id_setor):
     setor = setorDAO.get_setor_por_id(id_setor)
     if not setor:
         raise Erro.SETOR_INVALIDO
     pass
+
+def listar_problemas():
+    problemas = setorDAO.get_problemas()
+
+    if not problemas:
+        return Erro.COMUM
+
+    return problemas

@@ -40,7 +40,7 @@ class UsuarioDAO:
             (usuario.email, usuario.senha)
         )
 
-        usuario_auth_id = cursorAuth.fetchone()[0]
+        usuario_auth_id = cursorAuth.fetchone()['id']
         cursorAuth.close()
 
         # cria o usuário na base de dados de produção retornando seu ID
@@ -48,7 +48,7 @@ class UsuarioDAO:
             "INSERT INTO usuario (nome, sobrenome, email, status) VALUES (%s, %s, %s, %s) RETURNING id;",
             (usuario.nome, usuario.sobrenome, usuario.email, usuario.status)
         )
-        usuario_prod_id = cursorProd.fetchone()[0]
+        usuario_prod_id = cursorProd.fetchone()['id']
         cursorProd.close()
 
         # utiliza os ids retornados anteriormente para relacionar na tabela que mapeia a BD de autênticação com a de prod
@@ -69,7 +69,7 @@ class UsuarioDAO:
             'SELECT id_auth FROM usuario_auth_map WHERE id_usuario =%s',
             (id,)
         )
-        id_auth = cursor.fetchone()[0]
+        id_auth = cursor.fetchone()['id_auth']
         cursor.close()
 
         return id_auth
@@ -134,7 +134,7 @@ class UsuarioDAO:
             'UPDATE usuario SET nome = %s, sobrenome = %s, email = %s, status = %s WHERE id = %s RETURNING id;',
             (usuario.nome, usuario.sobrenome, usuario.email, usuario.status, usuario.id_prod)
         )
-        id_alterado = cursor.fetchone()[0]
+        id_alterado = cursor.fetchone()['id']
         cursor.close()
         return id_alterado
 

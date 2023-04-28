@@ -14,16 +14,16 @@ class GestorDAO:
 
     #cria primeiro os dados no banco de autênticação e depois cria no de produção
     #e logo após cria a linha na tabela de gestores
-    def create_gestor(self, email, senha, nome, sobrenome, status, setor):
+    def create_gestor(self, usuario):
 
-        id_usuario = (self.usuarioDAO.create_usuario(email, senha, nome, sobrenome, status))['prod_id']
+        id_usuario = self.usuarioDAO.create_usuario(usuario)
 
         cursor = self.conexaoProd.executa_query(
             'INSERT INTO gestor_ocorrencia (id, setor_atuacao) VALUES (%s, %s) RETURNING id;',
-            (id_usuario, setor,)
+            (id_usuario, usuario.setor,)
         )
 
-        id_criado = cursor.fetchone()[0]
+        id_criado = cursor.fetchone()['id']
         cursor.close()
 
         return id_criado
@@ -38,6 +38,6 @@ class GestorDAO:
             (setor, id_usuario_prod,)
         )
 
-        id_att = cursor.fetchone()[0]
+        id_att = cursor.fetchone()['id']
 
         return id_att
