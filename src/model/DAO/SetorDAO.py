@@ -82,3 +82,6 @@ class SetorDAO:
             (id_setor,)
         )
 
+    def get_problemas(self):
+        cursor = self.conexaoProd.executa_query('SELECT id, nome FROM problema')
+        return cursor.fetchall()

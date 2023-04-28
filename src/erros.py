@@ -7,3 +7,4 @@ class ErroController(Enum):
     SETOR_INVALIDO = ('Setor não encontrado', 404)
     SETOR_NAO_CRIADO = ('O setor não foi criado, tente novamente', 500)
 
+    COMUM = ('erro interno do servidor', 500)

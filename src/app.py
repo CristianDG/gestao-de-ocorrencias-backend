@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#from psycopg2cffi import compat; compat.register()
+from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify, request, redirect, url_for, Blueprint
 from flask_cors import CORS
 from dotenv import load_dotenv, find_dotenv
@@ -217,4 +217,9 @@ def alterar_setor(id_setor):
 
 @app.get('/setor/<int:id_setor>/problemas')
 def listar_problemas_do_setor(id_setor):
-    return SetorController.listar_problemas(id_setor), 200
+    return SetorController.listar_problemas_do_setor(id_setor), 200
+
+
+@app.get('/problemas')
+def listar_problemas():
+    return SetorController.listar_problemas(), 200
