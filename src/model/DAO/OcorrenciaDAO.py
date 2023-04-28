@@ -27,13 +27,13 @@ class OcorrenciaDAO:
 
     def create_ocorrencia(self, ocorrencia):
         query_sql = "INSERT INTO ocorrencia (email_cidadao, descricao, status, " \
-                    "id_local, id_setor, id_problema) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;"
-
+                    "id_local, id_setor, id_problema) VALUES (%s, %s, %s, %s, %s) RETURNING id;"
 
         cursor = self.conexaoBD.executa_query(query_sql, (
             ocorrencia.email_cidadao, ocorrencia.descricao,
             ocorrencia.status, ocorrencia.id_local, ocorrencia.id_setor, ocorrencia.id_problema))
 
+        id = cursor.fetchone()
         id = cursor.fetchone()['id']
         cursor.close()
         return id
@@ -50,6 +50,7 @@ class OcorrenciaDAO:
         )
 
         id_ocorrencia = cursor.fetchone()['id']
+
         cursor.close()
         return id_ocorrencia
 
