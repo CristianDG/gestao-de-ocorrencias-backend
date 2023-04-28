@@ -33,7 +33,6 @@ class OcorrenciaDAO:
             ocorrencia.email_cidadao, ocorrencia.descricao,
             ocorrencia.status, ocorrencia.id_local, ocorrencia.id_setor, ocorrencia.id_problema))
 
-        id = cursor.fetchone()
         id = cursor.fetchone()['id']
         cursor.close()
         return id

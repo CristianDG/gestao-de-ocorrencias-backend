@@ -23,7 +23,7 @@ class GestorDAO:
             (id_usuario, usuario.setor,)
         )
 
-        id_criado = cursor.fetchone()
+        id_criado = cursor.fetchone()['id']
         cursor.close()
 
         return id_criado
