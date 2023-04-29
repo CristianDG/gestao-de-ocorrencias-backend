@@ -42,6 +42,7 @@ class ConexaoProd:
             password=os.getenv("PROD_DB_PASSWORD"),
             client_encoding=os.getenv("CLIENT_ENCODING")
         )
+        self.conexao.autocommit = True
 
 
     #método auxiliar para dar início ao uso da conexão com o banco de dados

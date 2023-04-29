@@ -25,6 +25,7 @@ class ConexaoAuth:
             password=os.getenv("AUTH_DB_PASSWORD"),
             client_encoding=os.getenv("CLIENT_ENCODING")
         )
+        self.conexao.autocommit = True
 
     def conectar(self):
         if self.conexao is None:
