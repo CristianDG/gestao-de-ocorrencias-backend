@@ -9,6 +9,7 @@ import jwt
 import os
 from datetime import datetime as dt, timedelta
 from tipos import Usuario, Ocorrencia, Setor
+from erros import ErroController as Erro
 from controllers import (
     OcorrenciaController,
     UsuarioController,
@@ -26,13 +27,14 @@ if os.getenv('DEBUG'):
 
 @app.errorhandler(Exception)
 def formatar_erro(erro):
+
+    if type(erro.args[0]) == Erro:
+        return ({'error': erro.args[0].value[0]}, erro.args[0].value[1])
+
     if os.getenv('DEBUG'):
         raise erro
 
-    try:
-        return ({'error': erro.args[0].value[0]}, erro.args[0].value[1])
-    except Exception as e:
-        return {'error': 'internal server error'}, 500
+    return {'error': 'internal server error'}, 500
 
 
 def verificar_existencia(campos: list[str], dic: dict) -> bool:

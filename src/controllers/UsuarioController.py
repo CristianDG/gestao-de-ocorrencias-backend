@@ -29,12 +29,12 @@ def procurar_por_id(id_usuario):
 def procurar_por_login(email, senha):
 
     id_usuario_auth = usuarioDAO.autentica_user(email, senha)
-    cargo = usuarioDAO.get_user_auth(id_usuario_auth)['cargo']
 
     if not id_usuario_auth:
         # NOTE: pode ser um erro melhor
         raise Exception(Erro.COMUM)
 
+    cargo = usuarioDAO.get_user_auth(id_usuario_auth)['cargo']
     dados_usuario = usuarioDAO.get_user_prod(usuarioDAO.get_usuario_auth_map_prod(id_usuario_auth))
 
     if not dados_usuario:
