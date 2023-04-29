@@ -3,6 +3,12 @@ from typing import Optional, Union
 from enum import Enum
 import datetime
 
+def asdict_factory(data):
+    def convert_value(obj):
+        if isinstance(obj, Enum):
+            return obj.value
+        return obj
+    return dict((k, convert_value(v)) for k, v in data)
 
 class StatusOcorrencia(Enum):
     PENDENTE = 'pendente'
@@ -23,7 +29,8 @@ class Ocorrencia:
     local: Optional[str] = None
     data_resolucao: Optional[datetime.datetime] = None
 
-    dict = asdict
+    def dict(self):
+        return asdict(self, dict_factory=asdict_factory)
 
 
 @dataclass
