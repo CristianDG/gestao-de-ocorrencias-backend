@@ -8,14 +8,14 @@ import datetime
 @dataclass
 class Ocorrencia:
     descricao: str
-    id_local:int
     id_setor: int
     id_problema: int
     status: Optional[str]
     email_cidadao: Optional[str]
+    id_local: Optional[int] = None
     id: Optional[int] = None
     data_criacao: datetime.datetime = datetime.datetime.now()
-    nome_local: Optional[str] = None
+    local: Optional[str] = None
     data_resolucao: Optional[datetime.datetime] = None
 
     dict = asdict

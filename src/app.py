@@ -101,7 +101,7 @@ def hello_world(usuario_solicitante):
     return 'admin' if usuario_solicitante.admin else 'gestor'
 
 @app.get("/ocorrencias")
-def listar_ocorrencias():
+def listar_ocorrencias(usuario_solicitante=None):
     # FIXME: como controlar qual é o setor?
     return OcorrenciaController.listar()
 
@@ -114,7 +114,6 @@ def registrar_ocorrencia():
         return {'error': erro}, 403
 
 
-
     dados_ocorrencia = {
         'email_cidadao' : ocorrencia_json.get('email_cidadao'),
         'descricao' : ocorrencia_json['descricao'],
@@ -125,7 +124,7 @@ def registrar_ocorrencia():
     return OcorrenciaController.registrar(dados_ocorrencia), 201
 
 @app.patch("/ocorrencias/<int:id_ocorrencia>/<int:id_setor>")
-def encaminhar_ocorrencia(id_ocorrencia, id_setor):
+def encaminhar_ocorrencia(id_ocorrencia, id_setor, usuario_solicitante=None):
 
     # TODO: falta validar
     # - [ ] token jwt para gestor
@@ -137,10 +136,11 @@ def encaminhar_ocorrencia(id_ocorrencia, id_setor):
 def login():
     usuario_json = request.get_json()
 
-    if ('email' not in usuario_json or
-        'senha' not in usuario_json or
-        not UsuarioController.procurarPorLogin(usuario_json['email'], usuario_json['senha'])):
+    erro = verificar_existencia(['email', 'senha'], usuario_json)
+    if erro:
+        return {'error': erro}, 403
 
+    if not UsuarioController.procurarPorLogin(usuario_json['email'], usuario_json['senha']):
         return {'error': 'email ou senha incorretos'}, 400
 
     usuario = UsuarioController.procurarPorLogin(usuario_json['email'], criptografar(usuario_json['senha']))
@@ -150,15 +150,15 @@ def login():
 
 
 @app.get('/gestor')
-def listar_gestores():
+def listar_gestores(usuario_solicitante=None):
     pass
 
 @app.get('/gestor/<int:id_gestor>')
-def informacoes_gestor(id_gestor):
+def informacoes_gestor(id_gestor, usuario_solicitante=None):
     pass
 
 @app.post('/gestor')
-def registrar_gestor():
+def registrar_gestor(usuario_solicitante=None):
     gestor_json = request.get_json()
 
     erro = verificar_existencia(
@@ -173,7 +173,7 @@ def registrar_gestor():
 
 
 @app.post('/gestor/<int:id_gestor>')
-def modificar_gestor(id_gestor):
+def modificar_gestor(id_gestor, usuario_solicitante=None):
     pass
 
 
@@ -183,15 +183,12 @@ def listar_setores():
     return SetorController.listar(), 200
 
 @app.post('/setor')
-def registrar_setor():
+def registrar_setor(usuario_solicitante=None):
     setor_json = request.get_json()
 
-    if(not setor_json.get('descricao')
-       or not setor_json.get('nome')):
-        #TODO: Mudar
-        return {'error': 'setor invalido'}, 400
-
-
+    erro = verificar_existencia(['nome', 'descricao'], setor_json)
+    if erro:
+        return {'error': erro}, 403
 
     dados_setor = {
         'nome' : setor_json.get('nome'),
@@ -201,7 +198,7 @@ def registrar_setor():
     return SetorController.criar(dados_setor), 201
 
 @app.patch('/setor/<int:id_setor>')
-def alterar_setor(id_setor):
+def alterar_setor(id_setor, usuario_solicitante=None):
     setor_json = request.get_json()
 
     dados_setor = {
@@ -213,7 +210,7 @@ def alterar_setor(id_setor):
     return SetorController.editar(id_setor, dados_setor), 200
 
 @app.get('/setor/<int:id_setor>/problemas')
-def listar_problemas_do_setor(id_setor):
+def listar_problemas_do_setor(id_setor, usuario_solicitante=None):
     return SetorController.listar_problemas_do_setor(id_setor), 200
 
 
