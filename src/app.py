@@ -28,7 +28,7 @@ if os.getenv('DEBUG'):
 @app.errorhandler(Exception)
 def formatar_erro(erro):
 
-    if type(erro.args[0]) == Erro:
+    if hasattr(erro, 'args') and len(erro.args) > 0 and type(erro.args[0]) == Erro:
         return ({'error': erro.args[0].value[0]}, erro.args[0].value[1])
 
     if os.getenv('DEBUG'):
@@ -100,6 +100,7 @@ def autenticar(gestor=False, admin=False):
 @app.route("/")
 @autenticar(gestor=True, admin=True)
 def hello_world(usuario_solicitante):
+    raise Exception()
     return 'admin' if usuario_solicitante.admin else 'gestor'
 
 @app.get("/ocorrencias")
