@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 if os.getenv('DEBUG_CDG'):
     from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify, request, redirect, url_for, Blueprint
@@ -7,7 +8,6 @@ from dotenv import load_dotenv, find_dotenv
 from functools import wraps
 from hashlib import sha256
 import jwt
-import os
 from datetime import datetime as dt, timedelta
 from tipos import Usuario, Ocorrencia, Setor
 from erros import ErroController as Erro
