@@ -2,6 +2,9 @@ from dataclasses import dataclass, asdict
 from typing import Optional, Union
 import datetime
 
+
+#NOTE: Fazer com que o banco retorne o local como str
+
 @dataclass
 class Ocorrencia:
     descricao: str

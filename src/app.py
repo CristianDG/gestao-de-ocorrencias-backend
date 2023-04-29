@@ -69,9 +69,12 @@ def autenticar(gestor=False, admin=False):
             if 'Authorization' not in request.headers:
                 return erro
 
-            # FIXME: acho que precisa de um controle pra não estourar
             token = decode(request.headers['Authorization'])
-            id_usuario = int(token['id'])
+            id_usuario = None
+            try:
+                id_usuario = int(token['id'])
+            except:
+                return erro
 
             # TODO: controlar se o token é antigo
             ttl_token = timedelta(hours=3)
@@ -82,15 +85,9 @@ def autenticar(gestor=False, admin=False):
             if (agora - data_token) > ttl_token:
                 return erro
 
-            # TODO: controlar se o usuário é gestor ou adm
-            # FIXME: integrar com o banco de auth
-            if not UsuarioController.procurarPorId(id_usuario):
+            usuario = UsuarioController.procurar_por_id(id_usuario)
+            if not usuario:
                 return erro
-
-            # TODO: retornar o usuario que chamou o endpoint
-            # FIXME: integrar com o banco de auth
-
-            usuario = Usuario(email="sla@email.com", id=id_usuario)
 
             return fn(*args, **kwargs, usuario_solicitante=usuario)
 
@@ -223,3 +220,7 @@ def listar_problemas_do_setor(id_setor):
 @app.get('/problemas')
 def listar_problemas():
     return SetorController.listar_problemas(), 200
+
+@app.get('/locais')
+def listar_locais():
+    return OcorrenciaController.listar_locais(), 200

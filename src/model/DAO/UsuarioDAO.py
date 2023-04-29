@@ -96,8 +96,7 @@ class UsuarioDAO:
 
         linha = cursor.fetchone()
         cursor.close()
-        if linha:
-            return {'id_prod': linha[0], 'nome': linha[1], 'sobrenome': linha[2], 'email': linha[3], "status": linha[5]}
+        return linha
 
     def get_user_auth(self, user_id):#retorna um usuário do banco de autênticação
         cursor = self.conexaoAuth.executa_query(
@@ -108,7 +107,7 @@ class UsuarioDAO:
         row = cursor.fetchone()
         cursor.close()
         if row:
-            return {'id_auth': user_id, 'cargo': row[0]} #id_auth, email e cargo respectivamento
+            return {'id_auth': user_id, 'cargo': row['cargo']} #id_auth, email e cargo respectivamento
         else:
             return None
 

@@ -16,18 +16,17 @@ def encaminhar(id_ocorrencia: int, id_setor: int):
     if not ocorrencia:
         raise Exception(Erro.OCORRENCIA_INVALIDA)
 
-    # TODO: falta controlar
-    # - se existe o setor
+    setor = setorDAO.get_setor_por_id(id_setor)
+    if not setor:
+        raise Exception(Erro.SETOR_INVALIDO)
+
     ocorrencia.id_setor = id_setor
     ocorrenciaDAO.update_ocorrencia(ocorrencia)
+
     return ocorrencia.dict()
 
 
 def registrar(dados_ocorrencia: Ocorrencia) -> Ocorrencia:
-    # TODO: falta controlar
-    # - [ ] se existe o local
-    # - [ ] se existe o setor
-
 
     id_setor = setorDAO.get_id_setor(dados_ocorrencia['id_problema'])
 
@@ -42,3 +41,6 @@ def registrar(dados_ocorrencia: Ocorrencia) -> Ocorrencia:
 
     ocorrencia.id = id
     return ocorrencia.dict()
+
+def listar_locais():
+    return ocorrenciaDAO.get_locais()

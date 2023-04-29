@@ -83,22 +83,11 @@ class OcorrenciaDAO:
 
 
     #retorna as ocorrências com base no id do setor
-    def get_ocorrencias_por_id_Setor(self, id_setor):
+    def get_ocorrencias_por_id_setor(self, id_setor):
         query_sql = "SELECT email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id_problema, id  " \
                     "FROM ocorrencia WHERE id_setor = %s"
         cursor = self.conexaoBD.executa_query(query_sql, id_setor)
         resultados = cursor.fetchall()
-        ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
-        for ocorrencia in resultados:
-            ocorrencias.append(self.formar_ocorrencia(ocorrencia))
-        cursor.close()
-        return ocorrencias
-
-    def get_ocorrencias_por_id(self, id):
-        query_sql = "SELECT email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id_problema, id " \
-                    "FROM ocorrencia WHERE id = %s"
-        cursor = self.conexaoBD.executa_query(query_sql, id)
-        resultados = cursor.fetchone()
         ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
         for ocorrencia in resultados:
             ocorrencias.append(self.formar_ocorrencia(ocorrencia))
@@ -117,5 +106,3 @@ class OcorrenciaDAO:
         else:
             cursor.close()
             return None
-
-
