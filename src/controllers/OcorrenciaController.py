@@ -9,7 +9,7 @@ setorDAO = SetorDAO(conexaoProd)
 
 
 def listar():
-    return ocorrenciaDAO.get_ocorrencias()
+    return [ocorrencia.dict() for ocorrencia in ocorrenciaDAO.get_ocorrencias()]
 
 def encaminhar(id_ocorrencia: int, id_setor: int):
     ocorrencia = ocorrenciaDAO.get_ocorrencia_by_id(id_ocorrencia)
