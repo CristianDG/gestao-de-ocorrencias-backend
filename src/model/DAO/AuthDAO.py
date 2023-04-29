@@ -13,18 +13,6 @@ class AuthDAO:
     def __init__(self, bdAuth):
         self.conexao = bdAuth.conectar()
 
-    def autentica_user(self, email, senha):
-        query = """
-                SELECT id FROM users
-                WHERE username = %s AND password = %s, password;
-                """
-        self.conexao.execute(query, (email, senha))
-        result = self.conexao.fetchone()
-        if result:
-            user_id = result[0]
-            return user_id
-        else:
-            return None
 
 
     def create_token(self, user_id, token_acesso, atualiza_token, expira_em):

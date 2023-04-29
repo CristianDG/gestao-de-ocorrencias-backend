@@ -140,10 +140,10 @@ def login():
     if erro:
         return {'error': erro}, 403
 
-    if not UsuarioController.procurarPorLogin(usuario_json['email'], usuario_json['senha']):
+    usuario = UsuarioController.procurar_por_login(usuario_json['email'], criptografar(usuario_json['senha']))
+    if not usuario:
         return {'error': 'email ou senha incorretos'}, 400
 
-    usuario = UsuarioController.procurarPorLogin(usuario_json['email'], criptografar(usuario_json['senha']))
     token = encode({'id': usuario.id, 'data': dt.now().timestamp()})
 
     return { 'token': token }, 200

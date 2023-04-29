@@ -33,6 +33,7 @@ class Usuario:
     admin: bool = False
     senha: Optional[str] = None
     setor: Optional[int] = None
+    matricula: Optional[str] = None
 
 @dataclass
 class Setor:

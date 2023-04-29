@@ -81,7 +81,7 @@ class UsuarioDAO:
             (id,)
         )
 
-        id_prod = cursor.fetchone()[0]
+        id_prod = cursor.fetchone()['id_usuario']
         cursor.close()
 
         return id_prod
@@ -108,6 +108,19 @@ class UsuarioDAO:
         cursor.close()
         if row:
             return {'id_auth': user_id, 'cargo': row['cargo']} #id_auth, email e cargo respectivamento
+        else:
+            return None
+
+    def autentica_user(self, email, senha):
+        query = """
+                SELECT id FROM users
+                WHERE email = %s AND password = %s;
+                """
+        cursor = self.conexaoAuth.executa_query(query, (email, senha))
+        result = cursor.fetchone()
+        if result:
+            user_id = result['id']
+            return user_id
         else:
             return None
 
