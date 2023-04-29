@@ -35,6 +35,8 @@ class Usuario:
     setor: Optional[int] = None
     matricula: Optional[str] = None
 
+    dict = asdict
+
 @dataclass
 class Setor:
     nome: str

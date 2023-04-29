@@ -5,8 +5,10 @@ from model.DAO.GestorDAO import GestorDAO
 from model.connection.ConexaoAuth import ConexaoAuth
 from model.connection.ConexaoProd import ConexaoProd
 
-usuarioDAO = UsuarioDAO(ConexaoAuth(), ConexaoProd())
-gestorDAO = GestorDAO(ConexaoProd(), usuarioDAO)
+conexaoProd = ConexaoProd()
+
+usuarioDAO = UsuarioDAO(ConexaoAuth(), conexaoProd)
+gestorDAO = GestorDAO(conexaoProd, usuarioDAO)
 
 def registrar(dados_gestor):
     # FIXME FIXME FIXME FIXME
@@ -31,7 +33,7 @@ def registrar(dados_gestor):
     gestor.id = id
 
     gestor.senha = None
-    return gestor
+    return gestor.dict()
 
 
 def listar():
