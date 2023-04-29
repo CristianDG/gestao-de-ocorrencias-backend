@@ -2,12 +2,11 @@ from tipos import Usuario
 from enum import Enum
 from model.DAO.UsuarioDAO import UsuarioDAO
 from model.DAO.GestorDAO import GestorDAO
-from model.connection.ConexaoAuth import ConexaoAuth
-from model.connection.ConexaoProd import ConexaoProd
+from model.connection.ConexaoAuth import conexaoAuth
+from model.connection.ConexaoProd import conexaoProd
 
-conexaoProd = ConexaoProd()
 
-usuarioDAO = UsuarioDAO(ConexaoAuth(), conexaoProd)
+usuarioDAO = UsuarioDAO(conexaoAuth, conexaoProd)
 gestorDAO = GestorDAO(conexaoProd, usuarioDAO)
 
 def registrar(dados_gestor):

@@ -1,9 +1,9 @@
 from tipos import Setor
 from erros import ErroController as Erro
 from model.DAO.SetorDAO import SetorDAO
-from model.connection.ConexaoProd import ConexaoProd
+from model.connection.ConexaoProd import conexaoProd
 
-setorDAO = SetorDAO(ConexaoProd())
+setorDAO = SetorDAO(conexaoProd)
 
 
 # FIXME: trocar para a classe Setor

@@ -12,7 +12,7 @@ Modificado 14/04 por Victor C. Alterações:
 Alteração da nomenclatura das funções para o padrão get, set, delete, etc.
 """
 
-from tipos import Ocorrencia
+from tipos import Ocorrencia, StatusOcorrencia as Status
 
 
 class OcorrenciaDAO:
@@ -23,6 +23,7 @@ class OcorrenciaDAO:
 
     @staticmethod
     def formar_ocorrencia(ocorrencia):
+        ocorrencia['status'] = Status(ocorrencia['status'])
         return Ocorrencia(**ocorrencia)
 
     def create_ocorrencia(self, ocorrencia):
@@ -31,7 +32,7 @@ class OcorrenciaDAO:
 
         cursor = self.conexaoBD.executa_query(query_sql, (
             ocorrencia.email_cidadao, ocorrencia.descricao,
-            ocorrencia.status, ocorrencia.id_local, ocorrencia.id_setor, ocorrencia.id_problema))
+            ocorrencia.status.value, ocorrencia.id_local, ocorrencia.id_setor, ocorrencia.id_problema))
 
         id = cursor.fetchone()['id']
         cursor.close()
@@ -44,7 +45,7 @@ class OcorrenciaDAO:
                     " data_resolucao = %s, id_local = %s, id_setor = %s WHERE id = %s RETURNING id;"
 
         cursor = self.conexaoBD.executa_query(query_sql, (
-            ocorrencia.id_problema, ocorrencia.email_cidadao, ocorrencia.descricao, ocorrencia.status,
+            ocorrencia.id_problema, ocorrencia.email_cidadao, ocorrencia.descricao, ocorrencia.status.value,
             ocorrencia.data_resolucao, ocorrencia.id_local, ocorrencia.id_setor, ocorrencia.id, )
         )
 

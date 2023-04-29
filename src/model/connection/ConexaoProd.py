@@ -70,3 +70,5 @@ class ConexaoProd:
         cursor.execute(query, params)
         return cursor
 
+
+conexaoProd = ConexaoProd()

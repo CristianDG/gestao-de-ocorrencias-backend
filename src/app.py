@@ -104,7 +104,7 @@ def hello_world(usuario_solicitante):
 
 @app.get("/ocorrencias")
 def listar_ocorrencias(usuario_solicitante=None):
-    # FIXME: como controlar qual é o setor?
+    # TODO: controlar qual é o setor
     return OcorrenciaController.listar()
 
 @app.post("/ocorrencias")
@@ -133,6 +133,15 @@ def encaminhar_ocorrencia(id_ocorrencia, id_setor, usuario_solicitante=None):
 
     return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
 
+@app.delete("/ocorrencias/<int:id_ocorrencia>")
+def invalidar_ocorrencia(id_ocorrencia, usuario_solicitante=None):
+
+    res = OcorrenciaController.invalidar(id_ocorrencia)
+    if not res:
+        raise Exception(Erro.COMUM)
+
+    return '', 204
+
 
 @app.post('/login')
 def login():
@@ -153,11 +162,11 @@ def login():
 
 @app.get('/gestor')
 def listar_gestores(usuario_solicitante=None):
-    pass
+    return {'status': 'Work In Progress'}
 
 @app.get('/gestor/<int:id_gestor>')
 def informacoes_gestor(id_gestor, usuario_solicitante=None):
-    pass
+    return {'status': 'Work In Progress'}
 
 @app.post('/gestor')
 def registrar_gestor(usuario_solicitante=None):
@@ -176,8 +185,7 @@ def registrar_gestor(usuario_solicitante=None):
 
 @app.post('/gestor/<int:id_gestor>')
 def modificar_gestor(id_gestor, usuario_solicitante=None):
-    pass
-
+    return {'status': 'Work In Progress'}
 
 
 @app.get('/setor')

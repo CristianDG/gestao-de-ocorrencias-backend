@@ -1,11 +1,11 @@
-from tipos import Ocorrencia
+from tipos import Ocorrencia, StatusOcorrencia as Status
 from erros import ErroController as Erro
 from model.DAO.OcorrenciaDAO import OcorrenciaDAO
 from model.DAO.SetorDAO import SetorDAO
-from model.connection.ConexaoProd import ConexaoProd
+from model.connection.ConexaoProd import conexaoProd
 
-ocorrenciaDAO = OcorrenciaDAO(ConexaoProd())
-setorDAO = SetorDAO(ConexaoProd())
+ocorrenciaDAO = OcorrenciaDAO(conexaoProd)
+setorDAO = SetorDAO(conexaoProd)
 
 
 def listar():
@@ -33,7 +33,7 @@ def registrar(dados_ocorrencia: Ocorrencia) -> Ocorrencia:
     if not id_setor:
         raise Exception(Erro.OCORRENCIA_NAO_CRIADA)
 
-    ocorrencia = Ocorrencia(**dados_ocorrencia, status='Aberto', id=None, id_setor=id_setor)
+    ocorrencia = Ocorrencia(**dados_ocorrencia, status=Status.PENDENTE, id=None, id_setor=id_setor)
 
     id = ocorrenciaDAO.create_ocorrencia(ocorrencia)
     if not id:
@@ -44,3 +44,21 @@ def registrar(dados_ocorrencia: Ocorrencia) -> Ocorrencia:
 
 def listar_locais():
     return ocorrenciaDAO.get_locais()
+
+def invalidar(id_ocorrencia):
+
+    ocorrencia = ocorrenciaDAO.get_ocorrencia_by_id(id_ocorrencia)
+    if not ocorrencia:
+        raise Exception(Erro.OCORRENCIA_INVALIDA)
+
+    ocorrencia.status = Status.INVALIDA
+
+    res = ocorrenciaDAO.updateOcorrencia(ocorrencia)
+    if not res:
+        raise Exception(Erro.COMUM)
+
+    return True
+
+
+def solucionar(id_ocorrencia):
+    pass

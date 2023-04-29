@@ -43,3 +43,5 @@ class ConexaoAuth:
         cursor.execute(query, params)
         return cursor
 
+
+conexaoAuth = ConexaoAuth()

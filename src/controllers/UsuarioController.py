@@ -2,10 +2,10 @@ from tipos import Usuario
 from erros import ErroController as Erro
 from model.DAO.UsuarioDAO import UsuarioDAO
 from model.DAO.AuthDAO import AuthDAO
-from model.connection.ConexaoAuth import ConexaoAuth
-from model.connection.ConexaoProd import ConexaoProd
+from model.connection.ConexaoAuth import conexaoAuth
+from model.connection.ConexaoProd import conexaoProd
 
-usuarioDAO = UsuarioDAO(ConexaoAuth(), ConexaoProd())
+usuarioDAO = UsuarioDAO(conexaoAuth, conexaoProd)
 
 def criar():
     assert False, "Not Implemented"

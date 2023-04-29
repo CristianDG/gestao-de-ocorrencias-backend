@@ -1,20 +1,25 @@
 from dataclasses import dataclass, asdict
 from typing import Optional, Union
+from enum import Enum
 import datetime
 
 
-#NOTE: Fazer com que o banco retorne o local como str
+class StatusOcorrencia(Enum):
+    PENDENTE = 'pendente'
+    ATIVA = 'ativa'
+    INVALIDA = 'invalida'
+    SOLUCIONADA = 'solucionada'
 
 @dataclass
 class Ocorrencia:
     descricao: str
     id_setor: int
     id_problema: int
-    status: Optional[str]
+    status: StatusOcorrencia
     email_cidadao: Optional[str]
+    data_criacao: datetime.datetime = datetime.datetime.now()
     id_local: Optional[int] = None
     id: Optional[int] = None
-    data_criacao: datetime.datetime = datetime.datetime.now()
     local: Optional[str] = None
     data_resolucao: Optional[datetime.datetime] = None
 
@@ -45,7 +50,5 @@ class Setor:
     id: Optional[int] = None
 
     dict = asdict
-
-
 
 
