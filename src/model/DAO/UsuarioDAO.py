@@ -113,11 +113,17 @@ class UsuarioDAO:
 
     def get_user(self, id_prod):#retorna um objeto do tipo usuário que contém as informações dos dois bancos de dados com exceção da senha
         usuario = self.get_user_prod(id_prod)
-        usuario_auth= self.get_user_auth(self.get_usuario_prod_map_auth(id_prod))
+        usuario_auth = self.get_user_auth(self.get_usuario_prod_map_auth(id_prod))
 
+        id = usuario['id']
+        nome = usuario['nome']
+        sobrenome = usuario['sobrenome']
+        email = usuario['email']
+        status = usuario['status']
+        id_auth = usuario_auth['id_auth']
+        cargo = usuario_auth['cargo']
 
-        usuario_final = [usuario['id_prod'], usuario_auth['id_auth'], usuario['email'],
-                         usuario['nome'], usuario['sobrenome'], usuario['status'],usuario_auth['cargo'], None]
+        usuario_final = {'id': id, 'nome': nome, 'email': email, 'status': status, 'id_auth': id_auth, 'cargo': cargo, 'sobrenome': sobrenome}
 
         return self.formarUsuario(usuario_final)
 

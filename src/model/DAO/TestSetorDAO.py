@@ -21,7 +21,7 @@ class TestSetorDAO(unittest.TestCase):
 
 
     def test_inserir_setor(self):
-        setor = Setor(nome='Setor de testes automatizados', descricao='lida com a criação de testes automatizados', status='Ativo')
+        setor = Setor(nome='Setor de testes automatizados', desc_responsabilidades='lida com a criação de testes automatizados', status='Ativo')
 
         id_setor = self.dao.create_setor(setor)
         setor.id = id_setor
@@ -31,19 +31,19 @@ class TestSetorDAO(unittest.TestCase):
 
 
     def test_atualizar_setor(self):
-        setor = Setor(nome='Setor de testes automatizados', descricao='lida com a criação de testes automatizados', status='Ativo')
+        setor = Setor(nome='Setor de testes automatizados', desc_responsabilidades='lida com a criação de testes automatizados', status='Ativo')
 
         id_setor = self.dao.create_setor(setor)
         setor.id = id_setor
 
         nova_desc = 'Lida com criação e manutenção de teste automatizados, e teste de código'
-        setor.descricao = nova_desc
+        setor.desc_responsabilidades = nova_desc
         self.dao.update_setor(setor)
         self.ultimo_id_criado = id_setor
 
         setor_att = self.dao.get_setor_por_id(id_setor)
 
-        self.assertEqual(setor_att.descricao, nova_desc)
+        self.assertEqual(setor_att.desc_responsabilidades, nova_desc)
 
 
 

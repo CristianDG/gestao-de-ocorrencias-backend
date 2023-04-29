@@ -23,7 +23,7 @@ class TestUsuarioDAO(unittest.TestCase):
         self.dao.fechar_conexao()
 
     def test_inserir_usuario(self):
-        usuario = Usuario(email='pedrotestes@gmail.com', nome='pedrotestes', sobrenome='testes', status='ativo',
+        usuario = Usuario(email='teste12356@gmail.com', nome='pedrotestes', sobrenome='testes', status='ativo',
                           admin=False, senha='ajsdbhasjdbasd')
 
         id_usuario = self.dao.create_usuario(usuario)
@@ -36,13 +36,13 @@ class TestUsuarioDAO(unittest.TestCase):
 
     def test_atualizar_usuario(self):
 
-        usuario = Usuario(email='mariatestes@gmail.com', nome='mariatestes', sobrenome='testes', status='ativo',
+        usuario = Usuario(email='maria123456@gmail.com', nome='mariatestes', sobrenome='testes', status='ativo',
                           admin=False, senha='ajsdbhasjdbasd')
 
         id_prod = self.dao.create_usuario(usuario)
         self.ultimo_id_criado = id_prod
 
-        novo_email = "mariaMudoutestes@gmail.com"
+        novo_email = "mariaMudotestes123456@gmail.com"
         usuario.email = novo_email
         usuario.id_prod = id_prod
         self.dao.update_user(usuario)

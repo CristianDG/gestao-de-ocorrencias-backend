@@ -16,17 +16,12 @@ class SetorDAO:
 
     @staticmethod
     def formar_setor(setor):
-        return Setor(
-            id=setor['id'],
-            nome=setor['nome'],
-            descricao=setor['desc_responsabilidades'],
-            status=setor['status'],
-        )
+        return Setor(**setor)
 
     def create_setor(self, setor):
         cursor = self.conexaoProd.executa_query(
             'INSERT INTO setor (nome, desc_responsabilidades, status) VALUES (%s, %s, %s) RETURNING id;',
-            (setor.nome, setor.descricao, setor.status,)
+            (setor.nome, setor.desc_responsabilidades, setor.status,)
         )
 
         id_setor = cursor.fetchone()['id']
@@ -36,7 +31,7 @@ class SetorDAO:
     def update_setor(self, setor):
         cursor = self.conexaoProd.executa_query(
             'UPDATE setor SET nome=%s, desc_responsabilidades=%s, status=%s WHERE id=%s RETURNING id',
-            (setor.nome, setor.descricao, setor.status, setor.id,)
+            (setor.nome, setor.desc_responsabilidades, setor.status, setor.id,)
         )
 
         id_setor = cursor.fetchone()['id']
@@ -74,6 +69,7 @@ class SetorDAO:
         )
 
         id_setor = cursor.fetchone()['id_setor']
+        cursor.close()
         return id_setor
 
     def get_id_problemas(self, id_setor):
@@ -81,7 +77,12 @@ class SetorDAO:
             'SELECT id_problema FROM problema WHERE id_setor=%s',
             (id_setor,)
         )
+        resultados = cursor.fetchall()
+        cursor.close()
+        return resultados
 
     def get_problemas(self):
         cursor = self.conexaoProd.executa_query('SELECT id, nome FROM problema')
-        return cursor.fetchall()
+        resultado = cursor.fetchall()
+        cursor.close()
+        return resultado

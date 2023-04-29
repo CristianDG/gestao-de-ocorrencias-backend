@@ -22,9 +22,9 @@ class TestOcorrenciaDAO(unittest.TestCase):
         self.dao.conexaoBD.fechar_conexao()
 
     def test_inserir_ocorrencia(self):
-        ocorrencia = Ocorrencia(email_cidadao="maria@gmail.com", nome_cidadao="Maria", descricao="teste",
+        ocorrencia = Ocorrencia(email_cidadao="maria@gmail.com", descricao="teste",
                                 status="aberto",
-                                id_local=1, id_setor=1, id=None)
+                                id_local=1, id_setor=1, id_problema=1)
 
         id_ocorrencia = self.dao.create_ocorrencia(ocorrencia)
         self.primeiro_id_criado = id_ocorrencia
@@ -34,9 +34,9 @@ class TestOcorrenciaDAO(unittest.TestCase):
 
     def test_atualizar_ocorrencia(self):
         # Cria uma nova ocorrência
-        ocorrencia = Ocorrencia(email_cidadao="joao@gmail.com", nome_cidadao="João", descricao="teste",
+        ocorrencia = Ocorrencia(email_cidadao="joao@gmail.com", descricao="teste",
                                 status="aberto",
-                                id_local=1, id_setor=1, id=None)
+                                id_local=1, id_setor=1, id_problema=1)
         id_ocorrencia = self.dao.create_ocorrencia(ocorrencia)
         ocorrencia.id = id_ocorrencia
         # Atualiza a descrição da ocorrência
@@ -45,7 +45,7 @@ class TestOcorrenciaDAO(unittest.TestCase):
         self.dao.update_ocorrencia(ocorrencia)
         self.ultimo_id_criado = id_ocorrencia
         # Obtém a ocorrência atualizada
-        ocorrencia_atualizada = self.dao.getOcorrenciaById(id_ocorrencia)
+        ocorrencia_atualizada = self.dao.get_ocorrencia_by_id(id_ocorrencia)
 
         # Verifica se a descrição foi atualizada corretamente
         self.assertEqual(ocorrencia_atualizada.descricao, nova_descricao)
