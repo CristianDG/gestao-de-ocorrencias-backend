@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#from psycopg2cffi import compat; compat.register()
+from psycopg2cffi import compat; compat.register()
 from flask import Flask, jsonify, request, redirect, url_for, Blueprint
 from flask_cors import CORS
 from dotenv import load_dotenv, find_dotenv
@@ -126,14 +126,6 @@ def registrar_ocorrencia():
 
     return OcorrenciaController.registrar(dados_ocorrencia), 201
 
-@app.patch("/ocorrencias/<int:id_ocorrencia>/<int:id_setor>")
-def encaminhar_ocorrencia(id_ocorrencia, id_setor, usuario_solicitante=None):
-
-    # TODO: falta validar
-    # - [ ] token jwt para gestor
-
-    return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
-
 @app.delete("/ocorrencias/<int:id_ocorrencia>")
 def invalidar_ocorrencia(id_ocorrencia, usuario_solicitante=None):
 
@@ -151,6 +143,15 @@ def resolver_ocorrencia(id_ocorrencia, usuario_solicitante=None):
         raise Exception(Erro.COMUM)
 
     return '', 204
+
+@app.patch("/ocorrencias/<int:id_ocorrencia>/<int:id_setor>")
+def encaminhar_ocorrencia(id_ocorrencia, id_setor, usuario_solicitante=None):
+
+    # TODO: falta validar
+    # - [ ] token jwt para gestor
+
+    return OcorrenciaController.encaminhar(id_ocorrencia, id_setor)
+
 
 @app.post('/login')
 def login():

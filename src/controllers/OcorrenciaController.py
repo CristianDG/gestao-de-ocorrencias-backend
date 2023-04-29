@@ -53,21 +53,21 @@ def invalidar(id_ocorrencia):
 
     ocorrencia.status = Status.INVALIDA
 
-    res = ocorrenciaDAO.updateOcorrencia(ocorrencia)
+    res = ocorrenciaDAO.update_ocorrencia(ocorrencia)
     if not res:
         raise Exception(Erro.COMUM)
 
     return True
 
 
-def solucionar(id_ocorrencia):
+def resolver(id_ocorrencia):
     ocorrencia = ocorrenciaDAO.get_ocorrencia_by_id(id_ocorrencia)
     if not ocorrencia or ocorrencia.status == Status.INVALIDA:
         raise Exception(Erro.OCORRENCIA_INVALIDA)
 
     ocorrencia.status = Status.SOLUCIONADA
 
-    res = ocorrenciaDAO.updateOcorrencia(ocorrencia)
+    res = ocorrenciaDAO.update_ocorrencia(ocorrencia)
     if not res:
         raise Exception(Erro.COMUM)
 
