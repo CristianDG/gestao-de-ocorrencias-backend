@@ -22,7 +22,9 @@ def procurar_por_id(id_usuario):
     dados_usuario = usuarioDAO.get_user_prod(usuarioDAO.get_usuario_auth_map_prod(id_usuario))
 
     cargo = usuario_auth['cargo']
+    print(cargo)
     usuario = Usuario(**dados_usuario, cargo=cargo, admin= (cargo == 'administrador'))
+
 
     return usuario
 
