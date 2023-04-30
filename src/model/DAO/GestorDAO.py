@@ -4,6 +4,7 @@ Criado por Victor C 21/4
 Classe DAO para manipulação dos gestores
 '''
 
+from ...tipos import Usuario
 
 class GestorDAO:
 
@@ -34,13 +35,13 @@ class GestorDAO:
             return id_criado
 
     #atualiza os dados do usuário em todas as bases
-    def update_gestor(self, id_auth, id_usuario,email, senha, nome, sobrenome, status, setor):
-        id_usuario_auth = self.usuarioDAO.update_user_auth(id_auth, email, senha)
-        id_usuario_prod = self.usuarioDAO.update_user_prod(id_usuario, nome, sobrenome, None, email, status)
+    def update_gestor(self, usuario):
+        id_usuario_auth = self.usuarioDAO.update_user_auth(usuario.id_auth, usuario.email, usuario.senha)
+        id_usuario_prod = self.usuarioDAO.update_user_prod(usuario.id, usuario.nome, usuario.sobrenome, usuario.matricula, usuario.email, usuario.status)
 
         cursor = self.conexaoProd.executa_query(
             'UPDATE gestor_ocorrencia SET setor_atuacao = %s WHERE id = %s RETURNING id',
-            (setor, id_usuario_prod,)
+            (usuario.setor, id_usuario_prod,)
         )
 
         id_att = cursor.fetchone()['id']
@@ -49,3 +50,22 @@ class GestorDAO:
             return False
         else:
             return id_att
+
+
+    def get_gestores(self):
+        cursor = self.conexaoProd.executa_query(
+            "SELECT id , nome, sobrenome, email, matricula, status, setor_atuacao as setor"
+            "FROM (SELECT u.id, u.nome, u.sobrenome, u.email, u.matricula, u.status, go.setor_atuacao as setor FROM gestor_ocorrencia as go RIGHT JOIN usuario as u on go.id = u.id "
+            ") as dados_gestor"
+        )
+
+        resultado = cursor.fetchall()
+        cursor.close()
+        gestores = []
+
+        if not resultado:
+            return False
+
+        for gestor in resultado:
+            gestores.append(self.usuarioDAO.formarUsuario(gestor))
+        return gestores
