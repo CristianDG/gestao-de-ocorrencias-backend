@@ -50,8 +50,14 @@ def listar():
     pass
 
 
-def mudar_senha(usuario,senha, nova_senha):
+def mudar_senha(usuario, senha, nova_senha):
     usuario.id_auth = usuarioDAO.get_usuario_prod_map_auth(usuario.id)
+
+    senha_banco = usuarioDAO.get_user_auth(usuario.id_auth)['senha']
+
+    if senha_banco != senha:
+        raise Exception(Erro.SENHA_ERRADA)
+
     usuario.senha = nova_senha
     res = usuarioDAO.update_user_auth(usuario)
     if not res:
