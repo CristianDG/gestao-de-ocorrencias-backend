@@ -25,8 +25,10 @@ class GestorDAO:
 
         id_criado = cursor.fetchone()['id']
         cursor.close()
-
-        return id_criado
+        if id_criado is None:
+            return False
+        else:
+            return id_criado
 
     #atualiza os dados do usuário em todas as bases
     def update_gestor(self, id_auth, id_usuario,email, senha, nome, sobrenome, status, setor):
@@ -39,5 +41,8 @@ class GestorDAO:
         )
 
         id_att = cursor.fetchone()['id']
-
-        return id_att
+        cursor.close()
+        if id_att is None:
+            return False
+        else:
+            return id_att

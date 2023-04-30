@@ -71,6 +71,8 @@ class UsuarioDAO:
         )
         id_auth = cursor.fetchone()['id_auth']
         cursor.close()
+        if not id_auth:
+            return False
 
         return id_auth
 
@@ -83,6 +85,8 @@ class UsuarioDAO:
 
         id_prod = cursor.fetchone()['id_usuario']
         cursor.close()
+        if not id_prod:
+            return False
 
         return id_prod
 
@@ -96,6 +100,8 @@ class UsuarioDAO:
 
         linha = cursor.fetchone()
         cursor.close()
+        if not linha:
+            return False
         return linha
 
     def get_user_auth(self, user_id):#retorna um usuário do banco de autênticação
@@ -127,6 +133,8 @@ class UsuarioDAO:
     def get_user(self, id_prod):#retorna um objeto do tipo usuário que contém as informações dos dois bancos de dados com exceção da senha
         usuario = self.get_user_prod(id_prod)
         usuario_auth = self.get_user_auth(self.get_usuario_prod_map_auth(id_prod))
+        if usuario is None or usuario_auth is None:
+            return False
 
         id = usuario['id']
         nome = usuario['nome']
@@ -154,10 +162,14 @@ class UsuarioDAO:
         )
         id_alterado = cursor.fetchone()['id']
         cursor.close()
+        if not id_alterado:
+            return False
         return id_alterado
 
     def update_user(self, usuario):#atualiza os dados de um usuário das duas bases de dados
         id_alterado = self.update_user_prod(usuario)
+        if not id_alterado:
+            return False
         self.update_user_auth(usuario)
 
         return id_alterado

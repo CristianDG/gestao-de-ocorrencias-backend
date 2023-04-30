@@ -26,6 +26,8 @@ class SetorDAO:
 
         id_setor = cursor.fetchone()['id']
         cursor.close()
+        if id_setor is None:
+            return False
         return id_setor
 
     def update_setor(self, setor):
@@ -36,7 +38,8 @@ class SetorDAO:
 
         id_setor = cursor.fetchone()['id']
         cursor.close()
-
+        if id_setor is None:
+            return False
         return id_setor
 
     def get_setores(self):
@@ -47,6 +50,8 @@ class SetorDAO:
         setores = []
 
         resultado_query = cursor.fetchall()
+        if resultado_query is None:
+            return False
 
         for setor in resultado_query:
             setores.append(self.formar_setor(setor))
@@ -59,6 +64,8 @@ class SetorDAO:
 
         setor = self.formar_setor(cursor.fetchone())
         cursor.close()
+        if setor is None:
+            return False
 
         return setor
 
@@ -70,6 +77,8 @@ class SetorDAO:
 
         id_setor = cursor.fetchone()['id_setor']
         cursor.close()
+        if id_setor is None:
+            return False
         return id_setor
 
     def get_id_problemas(self, id_setor):
@@ -79,10 +88,14 @@ class SetorDAO:
         )
         resultados = cursor.fetchall()
         cursor.close()
+        if resultados is None:
+            return False
         return resultados
 
     def get_problemas(self):
         cursor = self.conexaoProd.executa_query('SELECT id, nome FROM problema')
         resultado = cursor.fetchall()
         cursor.close()
+        if resultado is None:
+            return False
         return resultado
