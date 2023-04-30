@@ -108,10 +108,14 @@ class OcorrenciaDAO:
 
         cursor = self.conexaoBD.executa_query(query_sql, id_setor)
         resultados = cursor.fetchall()
+        cursor.close()
+        if not resultados:
+            return False
         ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca
         for ocorrencia in resultados:
             ocorrencias.append(self.formar_ocorrencia(ocorrencia))
-        cursor.close()
+
+
         return ocorrencias
 
     def get_locais(self):
