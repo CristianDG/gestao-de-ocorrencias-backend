@@ -60,7 +60,7 @@ class OcorrenciaDAO:
                     "FROM ocorrencia AS oc LEFT JOIN local as lo ON oc.id_local = lo.id " \
                     "WHERE oc.status in (%s, %s)"
 
-        cursor = self.conexaoBD.executa_query(query_sql, (Status.PENDENTE.value, Status.ATIVA.value))
+        cursor = self.conexaoBD.executa_query(query_sql, (Status.PENDENTE.value, Status.VALIDA.value))
         resultados_query = cursor.fetchall()
         ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
 
