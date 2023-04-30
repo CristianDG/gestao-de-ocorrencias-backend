@@ -193,7 +193,7 @@ def registrar_gestor(usuario_solicitante=None):
     gestor_json = request.get_json()
 
     erro = verificar_existencia(
-        ['email', 'senha', 'nome', 'sobrenome', 'status', 'id_setor'], gestor_json)
+        ['email', 'senha', 'nome', 'sobrenome', 'id_setor'], gestor_json)
 
     if erro:
         return {'error': erro}, 403

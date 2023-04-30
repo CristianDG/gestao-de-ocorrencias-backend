@@ -10,7 +10,6 @@ usuarioDAO = UsuarioDAO(conexaoAuth, conexaoProd)
 gestorDAO = GestorDAO(conexaoProd, usuarioDAO)
 
 def registrar(dados_gestor):
-    # FIXME FIXME FIXME FIXME
 
     gestor = Usuario(
         email=dados_gestor['email'],
@@ -18,11 +17,10 @@ def registrar(dados_gestor):
         senha=dados_gestor['senha'],
         nome=dados_gestor['nome'],
         sobrenome=dados_gestor['sobrenome'],
-        status=dados_gestor['status'],
+        status="Ativo",
         cargo="Gestor",
         admin=False,
         setor=dados_gestor['id_setor']
-
     )
 
     id = gestorDAO.create_gestor(gestor)
