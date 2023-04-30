@@ -125,8 +125,9 @@ class SetorDAO:
         resultado = cursor.fetchall()
         cursor.close()
         problemas = []
-        for problema in resultado:
-            problemas.append(self.formar_problema(problema))
         if resultado is None:
             return False
-        return resultado
+        for problema in resultado:
+            problemas.append(self.formar_problema(problema))
+
+        return problemas
