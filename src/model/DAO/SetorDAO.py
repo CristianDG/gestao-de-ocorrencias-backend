@@ -81,6 +81,19 @@ class SetorDAO:
             return False
         return id_setor
 
+    def create_problema(self, nome, id_setor):
+        cursor = self.conexaoProd.executa_query(
+            'INSERT INTO problema (nome, id_setor) VALUES (%s, %s) RETURNING id',
+            (nome, id_setor,)
+        )
+        id_problema_criado = cursor.fetchone()['id']
+        cursor.close()
+        if not id_problema_criado:
+            return False
+        else:
+            return id_problema_criado
+
+
     def get_id_problemas(self, id_setor):
         cursor = self.conexaoProd.executa_query(
             'SELECT id_problema FROM problema WHERE id_setor=%s',

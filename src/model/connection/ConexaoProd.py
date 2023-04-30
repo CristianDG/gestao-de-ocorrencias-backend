@@ -16,6 +16,7 @@ deste modo, chamei ConexaoProd para deixar explicíto que é o banco da produç�
 
 dependências utilizadas:
 psycopg2.binary
+psycopg2.extras
 """
 
 import os
