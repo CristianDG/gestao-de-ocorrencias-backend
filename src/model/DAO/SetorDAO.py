@@ -4,7 +4,7 @@ Classe destinada para manipular os setor
 
 '''
 
-from tipos import Setor
+from tipos import Setor, Problema
 
 
 class SetorDAO:
@@ -17,6 +17,10 @@ class SetorDAO:
     @staticmethod
     def formar_setor(setor):
         return Setor(**setor)
+
+    @staticmethod
+    def formar_problema(problema):
+        return Problema(**problema)
 
     def create_setor(self, setor):
         cursor = self.conexaoProd.executa_query(
@@ -81,10 +85,10 @@ class SetorDAO:
             return False
         return id_setor
 
-    def create_problema(self, nome, id_setor):
+    def create_problema(self, problema):
         cursor = self.conexaoProd.executa_query(
             'INSERT INTO problema (nome, id_setor) VALUES (%s, %s) RETURNING id',
-            (nome, id_setor,)
+            (problema.nome, problema.id_setor,)
         )
         id_problema_criado = cursor.fetchone()['id']
         cursor.close()
@@ -92,6 +96,14 @@ class SetorDAO:
             return False
         else:
             return id_problema_criado
+
+
+    def update_problema(self, problema):
+        cursor = self.conexaoProd.executa_query(
+            'UPDATE problema SET nome=%s, id_setor =%s WHERE id=%s',
+            (problema.nome, problema.id_setor, problema.id)
+        )
+        return problema.id
 
 
     def get_id_problemas(self, id_setor):
@@ -103,12 +115,18 @@ class SetorDAO:
         cursor.close()
         if resultados is None:
             return False
-        return resultados
+        ids = []
+        for id in resultados:
+            ids.append(id)
+        return ids
 
     def get_problemas(self):
         cursor = self.conexaoProd.executa_query('SELECT id, nome FROM problema')
         resultado = cursor.fetchall()
         cursor.close()
+        problemas = []
+        for problema in resultado:
+            problemas.append(self.formar_problema(problema))
         if resultado is None:
             return False
         return resultado

@@ -59,3 +59,11 @@ class Setor:
     dict = asdict
 
 
+@dataclass
+class problema:
+    nome: str
+    id_setor: int
+    id: Optional[int] = None
+
+    dict = asdict
+
