@@ -48,3 +48,14 @@ def procurar_por_login(email, senha):
 def listar():
     assert False, "Not Implemented"
     pass
+
+
+def mudar_senha(usuario, nova_senha):
+    usuario.id_auth = usuarioDAO.get_usuario_prod_map_auth(usuario.id)
+    usuario.senha = nova_senha
+    res = usuarioDAO.update_user_auth(usuario)
+
+    if not res:
+        raise Exception(Erro.COMUM)
+
+    return True

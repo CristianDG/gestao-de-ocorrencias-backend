@@ -179,6 +179,25 @@ def login():
 
     return { 'token': token }, 200
 
+@app.patch('/mudar-senha')
+@autenticar(gestor=True, admin=True)
+def mudar_senha(usuario_solicitante=None):
+    senhas_json = request.get_json()
+    erro = verificar_existencia(['senha', 'nova_senha'], senhas_json)
+    if erro:
+        return {'error': erro}, 403
+
+    if senhas_json['senha'] != senhas_json['nova_senha']:
+        return {'error': "As senhas não correspondem"}, 403
+
+    nova_senha = criptografar(senhas_json['nova_senha'])
+    res = UsuarioController.mudar_senha(usuario_solicitante, nova_senha)
+
+    if not res:
+        raise Exception(Erro.COMUM)
+
+    return '', 200
+
 
 @app.get('/gestor')
 def listar_gestores(usuario_solicitante=None):
