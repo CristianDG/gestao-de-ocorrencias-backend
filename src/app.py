@@ -187,11 +187,9 @@ def mudar_senha(usuario_solicitante=None):
     if erro:
         return {'error': erro}, 403
 
-    if senhas_json['senha'] != senhas_json['nova_senha']:
-        return {'error': "As senhas não correspondem"}, 403
-
+    senha = criptografar(senhas_json['senha'])
     nova_senha = criptografar(senhas_json['nova_senha'])
-    res = UsuarioController.mudar_senha(usuario_solicitante, nova_senha)
+    res = UsuarioController.mudar_senha(usuario_solicitante, senha, nova_senha)
 
     if not res:
         raise Exception(Erro.COMUM)
@@ -201,7 +199,7 @@ def mudar_senha(usuario_solicitante=None):
 
 @app.get('/gestor')
 def listar_gestores(usuario_solicitante=None):
-    return {'status': 'Work In Progress'}
+    return GestorController.listar()
 
 @app.get('/gestor/<int:id_gestor>')
 def informacoes_gestor(id_gestor, usuario_solicitante=None):

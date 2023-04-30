@@ -29,8 +29,6 @@ def registrar(dados_gestor):
     if not id:
         raise Exception(Erro.USUARIO_EXISTENTE)
 
-    # TODO: Controle de erros
-
     gestor.id = id
     gestor.senha = None
 
@@ -38,8 +36,7 @@ def registrar(dados_gestor):
 
 
 def listar():
-    assert False, "Not Implemented"
-    pass
+    return gestorDAO.get_gestores()
 
 def mudar_setor(id_gestor, id_setor):
     assert False, "Not Implemented"

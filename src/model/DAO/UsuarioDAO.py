@@ -106,14 +106,14 @@ class UsuarioDAO:
 
     def get_user_auth(self, user_id):#retorna um usuário do banco de autênticação
         cursor = self.conexaoAuth.executa_query(
-            'SELECT cargo FROM users WHERE id = %s;',
+            'SELECT cargo, senha FROM users WHERE id = %s;',
             (user_id,)
         )
 
         row = cursor.fetchone()
         cursor.close()
         if row:
-            return {'id_auth': user_id, 'cargo': row['cargo']} #id_auth, email e cargo respectivamento
+            return {'id_auth': user_id, 'cargo': row['cargo'], 'senha': row['senha']} #id_auth, email e cargo respectivamento
         else:
             return None
 
@@ -154,6 +154,8 @@ class UsuarioDAO:
             (usuario.email, usuario.senha, usuario.id_auth)
         )
         cursor.close()
+        return True
+
 
     def update_user_prod(self, usuario):#atualiza os dados de um usuário do banco de regra de negócio
         cursor = self.conexaoProd.executa_query(

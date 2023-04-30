@@ -4,7 +4,7 @@ Criado por Victor C 21/4
 Classe DAO para manipulação dos gestores
 '''
 
-from ...tipos import Usuario
+from tipos import Usuario
 
 class GestorDAO:
 
@@ -54,9 +54,11 @@ class GestorDAO:
 
     def get_gestores(self):
         cursor = self.conexaoProd.executa_query(
-            "SELECT id , nome, sobrenome, email, matricula, status, setor_atuacao as setor"
-            "FROM (SELECT u.id, u.nome, u.sobrenome, u.email, u.matricula, u.status, go.setor_atuacao as setor FROM gestor_ocorrencia as go RIGHT JOIN usuario as u on go.id = u.id "
-            ") as dados_gestor"
+            """
+            SELECT id , nome, sobrenome, email, matricula, status, dados_gestor.setor
+            FROM (SELECT u.id, u.nome, u.sobrenome, u.email, u.matricula, u.status, go.setor_atuacao as setor
+                  FROM gestor_ocorrencia as go RIGHT JOIN usuario as u on go.id = u.id) as dados_gestor
+            """
         )
 
         resultado = cursor.fetchall()

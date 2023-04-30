@@ -10,3 +10,4 @@ class ErroController(Enum):
     COMUM = ('erro interno do servidor', 500)
 
     USUARIO_EXISTENTE = ('O usuário já existe', 403)
+    SENHA_ERRADA = ('A senha anterior não é igual à senha enviada',403)
