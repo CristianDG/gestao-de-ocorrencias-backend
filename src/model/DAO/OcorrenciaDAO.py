@@ -54,10 +54,25 @@ class OcorrenciaDAO:
         cursor.close()
         return id_ocorrencia
 
+    def get_ocorrencias_para_solucionar(self):
+        query_sql = "SELECT oc.email_cidadao, oc.descricao, oc.status, oc.data_criacao, oc.data_resolucao," \
+                    "oc.id_local, oc.id_problema, oc.id_setor, lo.nome as local, oc.id " \
+                    "FROM ocorrencia AS oc LEFT JOIN local as lo ON oc.id_local = lo.id " \
+                    "WHERE oc.status in (%s, %s)"
+
+        cursor = self.conexaoBD.executa_query(query_sql, (Status.PENDENTE.value, Status.ATIVA.value))
+        resultados_query = cursor.fetchall()
+        ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
+
+        for ocorrencia in resultados_query:
+            ocorrencias.append(self.formar_ocorrencia(ocorrencia))
+        cursor.close()
+        return ocorrencias
 
     #retorna todas as ocorrências
     def get_ocorrencias(self):
-        query_sql = "SELECT oc.email_cidadao, oc.descricao, oc.status, oc.data_criacao, oc.data_resolucao, oc.id_local, oc.id_problema, oc.id_setor, lo.nome as local, oc.id " \
+        query_sql = "SELECT oc.email_cidadao, oc.descricao, oc.status, oc.data_criacao, oc.data_resolucao," \
+                    "oc.id_local, oc.id_problema, oc.id_setor, lo.nome as local, oc.id " \
                     "FROM ocorrencia AS oc LEFT JOIN local as lo ON oc.id_local = lo.id"
         cursor = self.conexaoBD.executa_query(query_sql, None)
         resultados_query = cursor.fetchall()
@@ -85,8 +100,12 @@ class OcorrenciaDAO:
 
     #retorna as ocorrências com base no id do setor
     def get_ocorrencias_por_id_setor(self, id_setor):
-        query_sql = "SELECT email_cidadao, descricao, status, data_criacao, data_resolucao, id_local, id_setor, id_problema, id  " \
-                    "FROM ocorrencia WHERE id_setor = %s"
+
+        query_sql = "SELECT oc.email_cidadao, oc.descricao, oc.status, oc.data_criacao, oc.data_resolucao," \
+                    "oc.id_local, oc.id_problema, oc.id_setor, lo.nome as local, oc.id " \
+                    "FROM ocorrencia AS oc LEFT JOIN local as lo ON oc.id_local = lo.id" \
+                    "WHERE id_setor = %s"
+
         cursor = self.conexaoBD.executa_query(query_sql, id_setor)
         resultados = cursor.fetchall()
         ocorrencias = []  # lista contendo objetos de ocorrencias provindos da busca

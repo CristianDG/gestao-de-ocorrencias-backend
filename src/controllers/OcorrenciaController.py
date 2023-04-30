@@ -8,8 +8,8 @@ ocorrenciaDAO = OcorrenciaDAO(conexaoProd)
 setorDAO = SetorDAO(conexaoProd)
 
 
-def listar():
-    return [ocorrencia.dict() for ocorrencia in ocorrenciaDAO.get_ocorrencias()]
+def listar() -> list[Ocorrencia]:
+    return [ocorrencia.dict() for ocorrencia in ocorrenciaDAO.get_ocorrencias_para_solucionar()]
 
 def encaminhar(id_ocorrencia: int, id_setor: int):
     ocorrencia = ocorrenciaDAO.get_ocorrencia_by_id(id_ocorrencia)
