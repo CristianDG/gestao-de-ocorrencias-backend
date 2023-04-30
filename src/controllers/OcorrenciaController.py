@@ -48,7 +48,7 @@ def listar_locais():
 def invalidar(id_ocorrencia):
 
     ocorrencia = ocorrenciaDAO.get_ocorrencia_by_id(id_ocorrencia)
-    if not ocorrencia or ocorrencia.status == Status.SOLUCIONADA:
+    if not ocorrencia or ocorrencia.status in [Status.SOLUCIONADA, Status.VALIDA]:
         raise Exception(Erro.OCORRENCIA_INVALIDA)
 
     ocorrencia.status = Status.INVALIDA
@@ -62,7 +62,20 @@ def invalidar(id_ocorrencia):
 
 def resolver(id_ocorrencia):
     ocorrencia = ocorrenciaDAO.get_ocorrencia_by_id(id_ocorrencia)
-    if not ocorrencia or ocorrencia.status == Status.INVALIDA:
+    if not ocorrencia or ocorrencia.status in [Status.INVALIDA, Status.PENDENTE]:
+        raise Exception(Erro.OCORRENCIA_INVALIDA)
+
+    ocorrencia.status = Status.SOLUCIONADA
+
+    res = ocorrenciaDAO.update_ocorrencia(ocorrencia)
+    if not res:
+        raise Exception(Erro.COMUM)
+
+    return True
+
+def validar(id_ocorrencia):
+    ocorrencia = ocorrenciaDAO.get_ocorrencia_by_id(id_ocorrencia)
+    if not ocorrencia or ocorrencia.status in [Status.INVALIDA, Status.SOLUCIONADA]:
         raise Exception(Erro.OCORRENCIA_INVALIDA)
 
     ocorrencia.status = Status.SOLUCIONADA

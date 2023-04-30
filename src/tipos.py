@@ -12,7 +12,7 @@ def asdict_factory(data):
 
 class StatusOcorrencia(Enum):
     PENDENTE = 'pendente'
-    ATIVA = 'ativa'
+    VALIDA = 'valida'
     INVALIDA = 'invalida'
     SOLUCIONADA = 'solucionada'
 
