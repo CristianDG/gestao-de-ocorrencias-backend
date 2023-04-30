@@ -108,26 +108,29 @@ class SetorDAO:
 
     def get_id_problemas(self, id_setor):
         cursor = self.conexaoProd.executa_query(
-            'SELECT id_problema, nome FROM problema WHERE id_setor=%s',
+            'SELECT id, nome from problema WHERE id_setor = %s',
             (id_setor,)
         )
         resultados = cursor.fetchall()
         cursor.close()
+
         if resultados is None:
             return False
-        ids = []
-        for id in resultados:
-            ids.append(id)
-        return ids
+
+        problemas = []
+        for problema in resultados:
+            problemas.append(self.formar_problema(problema))
+        return problemas
 
     def get_problemas(self):
-        cursor = self.conexaoProd.executa_query('SELECT id, nome FROM problema')
+        cursor = self.conexaoProd.executa_query('SELECT id, id_setor, nome FROM problema')
         resultado = cursor.fetchall()
         cursor.close()
         problemas = []
         if resultado is None:
             return False
         for problema in resultado:
+            print(problema)
             problemas.append(self.formar_problema(problema))
 
         return problemas

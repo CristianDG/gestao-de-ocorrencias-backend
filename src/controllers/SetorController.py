@@ -1,4 +1,4 @@
-from tipos import Setor
+from tipos import Setor, Problema
 from erros import ErroController as Erro
 from model.DAO.SetorDAO import SetorDAO
 from model.connection.ConexaoProd import conexaoProd
@@ -22,7 +22,7 @@ def criar(dados_setor, problemas):
     problemas_salvos = []
     for problema in problemas:
         if type(problema) == str:
-            setorDAO.create_problema(problema, id_setor)
+            setorDAO.create_problema(Problema(problema, id_setor))
             problemas_salvos.append(problema)
 
     setor.problemas = problemas_salvos
@@ -55,7 +55,9 @@ def editar(id_setor, dados_setor):
 def listar():
     setores = []
     for setor in setorDAO.get_setores():
+        setor.problemas = [problema.nome for problema in setorDAO.get_id_problemas(setor.id)]
         setores.append(setor)
+
     return setores
 
 def listar_problemas_do_setor(id_setor):

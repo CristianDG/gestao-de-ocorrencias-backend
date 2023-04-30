@@ -61,9 +61,9 @@ class Setor:
 
 
 @dataclass
-class problema:
+class Problema:
     nome: str
-    id_setor: int
+    id_setor: Optional[int] = None
     id: Optional[int] = None
 
     dict = asdict
