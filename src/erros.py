@@ -8,3 +8,5 @@ class ErroController(Enum):
     SETOR_NAO_CRIADO = ('O setor não foi criado, tente novamente', 500)
 
     COMUM = ('erro interno do servidor', 500)
+
+    USUARIO_EXISTENTE = ('O usuário já existe', 403)

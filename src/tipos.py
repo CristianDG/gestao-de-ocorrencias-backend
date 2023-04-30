@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from typing import Optional, Union
 from enum import Enum
 import datetime
@@ -55,6 +55,7 @@ class Setor:
     desc_responsabilidades: str
     status: str
     id: Optional[int] = None
+    problemas: list[str] = field(default_factory=list)
 
     dict = asdict
 

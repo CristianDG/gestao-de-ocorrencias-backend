@@ -1,4 +1,5 @@
 from tipos import Usuario
+from erros import ErroController as Erro
 from enum import Enum
 from model.DAO.UsuarioDAO import UsuarioDAO
 from model.DAO.GestorDAO import GestorDAO
@@ -25,11 +26,14 @@ def registrar(dados_gestor):
 
     id = gestorDAO.create_gestor(gestor)
 
+    if not id:
+        raise Exception(Erro.USUARIO_EXISTENTE)
+
     # TODO: Controle de erros
 
     gestor.id = id
-
     gestor.senha = None
+
     return gestor.dict()
 
 
@@ -37,10 +41,6 @@ def listar():
     assert False, "Not Implemented"
     pass
 
-def mudar_setor():
-    assert False, "Not Implemented"
-    pass
-
-def encaminhar_ocorrencia():
+def mudar_setor(id_gestor, id_setor):
     assert False, "Not Implemented"
     pass

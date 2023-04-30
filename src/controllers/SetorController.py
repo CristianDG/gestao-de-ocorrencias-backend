@@ -6,23 +6,27 @@ from model.connection.ConexaoProd import conexaoProd
 setorDAO = SetorDAO(conexaoProd)
 
 
-# FIXME: trocar para a classe Setor
-
-def criar(dados_setor):
+def criar(dados_setor, problemas):
 
     # TODO: controlar
 
     setor = Setor(**dados_setor, status = 'Ativo')
 
-    id_setor = setorDAO.create_setor(Setor(
-        nome=setor.nome,
-        descricao=setor.descricao,
-        status=setor.status))
+    id_setor = setorDAO.create_setor(setor)
 
     if not id_setor:
         raise Exception(Erro.SETOR_NAO_CRIADO)
 
     setor.id = id_setor
+
+    problemas_salvos = []
+    for problema in problemas:
+        if type(problema) == str:
+            setorDAO.create_problema(problema, id_setor)
+            problemas_salvos.append(problema)
+
+    setor.problemas = problemas_salvos
+
     return setor.dict()
 
 def editar(id_setor, dados_setor):
@@ -31,7 +35,6 @@ def editar(id_setor, dados_setor):
     if not setor:
         raise Exception(Erro.SETOR_INVALIDO)
 
-    # FIXME: Remover a linha abaixo
     id_setor = setorDAO.update_setor(Setor(
         id=id_setor,
         nome=dados_setor.get('nome') or setor.nome,
@@ -40,9 +43,11 @@ def editar(id_setor, dados_setor):
 
     if not id_setor:
         # FIXME: Encontrar um erro melhor
-        assert False, "Not Implemented"
+        raise Exception(Erro.COMUM)
 
-    # FIXME TROCAR PARA A CLASSE
+
+    # FIXME: e os problemas?
+
     return setorDAO.get_setor_por_id(id_setor).dict()
 
 

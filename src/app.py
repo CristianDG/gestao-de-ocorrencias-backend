@@ -216,16 +216,19 @@ def listar_setores():
 def registrar_setor(usuario_solicitante=None):
     setor_json = request.get_json()
 
-    erro = verificar_existencia(['nome', 'descricao'], setor_json)
+    erro = verificar_existencia(['nome', 'desc_responsabilidades', 'problemas'], setor_json)
     if erro:
         return {'error': erro}, 403
 
+    if not type(setor_json['problemas']) == list:
+        raise Exception(Erro.COMUM)
+
     dados_setor = {
         'nome' : setor_json.get('nome'),
-        'descricao' : setor_json.get('descricao'),
+        'desc_responsabilidades' : setor_json.get('desc_responsabilidades'),
     }
 
-    return SetorController.criar(dados_setor), 201
+    return SetorController.criar(dados_setor, setor_json['problemas']), 201
 
 @app.patch('/setor/<int:id_setor>')
 def alterar_setor(id_setor, usuario_solicitante=None):

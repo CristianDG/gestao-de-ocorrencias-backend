@@ -16,7 +16,10 @@ class GestorDAO:
     #e logo após cria a linha na tabela de gestores
     def create_gestor(self, usuario):
 
-        id_usuario = self.usuarioDAO.create_usuario(usuario)
+        try:
+            id_usuario = self.usuarioDAO.create_usuario(usuario)
+        except:
+            return False
 
         cursor = self.conexaoProd.executa_query(
             'INSERT INTO gestor_ocorrencia (id, setor_atuacao) VALUES (%s, %s) RETURNING id;',
