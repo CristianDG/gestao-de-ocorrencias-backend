@@ -58,7 +58,7 @@ class OcorrenciaDAO:
         query_sql = "SELECT oc.email_cidadao, oc.descricao, oc.status, oc.data_criacao, oc.data_resolucao," \
                     "oc.id_local, oc.id_problema, oc.id_setor, lo.nome as local, oc.id " \
                     "FROM ocorrencia AS oc LEFT JOIN local as lo ON oc.id_local = lo.id " \
-                    "WHERE oc.status in (%s, %s)"
+                    "WHERE oc.status = %s or oc.status = %s"
 
         cursor = self.conexaoBD.executa_query(query_sql, (Status.PENDENTE.value, Status.VALIDA.value))
         resultados_query = cursor.fetchall()

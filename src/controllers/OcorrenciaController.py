@@ -78,7 +78,7 @@ def validar(id_ocorrencia):
     if not ocorrencia or ocorrencia.status in [Status.INVALIDA, Status.SOLUCIONADA]:
         raise Exception(Erro.OCORRENCIA_INVALIDA)
 
-    ocorrencia.status = Status.SOLUCIONADA
+    ocorrencia.status = Status.VALIDA
 
     res = ocorrenciaDAO.update_ocorrencia(ocorrencia)
     if not res:
