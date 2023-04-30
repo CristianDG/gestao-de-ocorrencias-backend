@@ -139,6 +139,15 @@ def invalidar_ocorrencia(id_ocorrencia, usuario_solicitante=None):
 @app.patch("/ocorrencias/<int:id_ocorrencia>")
 def resolver_ocorrencia(id_ocorrencia, usuario_solicitante=None):
 
+    res = OcorrenciaController.validar(id_ocorrencia)
+    if not res:
+        raise Exception(Erro.COMUM)
+
+    return '', 204
+
+@app.post("/ocorrencias/<int:id_ocorrencia>")
+def resolver_ocorrencia(id_ocorrencia, usuario_solicitante=None):
+
     res = OcorrenciaController.resolver(id_ocorrencia)
     if not res:
         raise Exception(Erro.COMUM)
