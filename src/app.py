@@ -146,7 +146,7 @@ def resolver_ocorrencia(id_ocorrencia, usuario_solicitante=None):
     return '', 204
 
 @app.post("/ocorrencias/<int:id_ocorrencia>")
-def resolver_ocorrencia(id_ocorrencia, usuario_solicitante=None):
+def validar_ocorrencia(id_ocorrencia, usuario_solicitante=None):
 
     res = OcorrenciaController.resolver(id_ocorrencia)
     if not res:
