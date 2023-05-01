@@ -2,10 +2,12 @@ from tipos import Ocorrencia, StatusOcorrencia as Status
 from erros import ErroController as Erro
 from model.DAO.OcorrenciaDAO import OcorrenciaDAO
 from model.DAO.SetorDAO import SetorDAO
+from model.DAO.DashboardDAO import DashboardDAO
 from model.connection.ConexaoProd import conexaoProd
 
 ocorrenciaDAO = OcorrenciaDAO(conexaoProd)
 setorDAO = SetorDAO(conexaoProd)
+dashboardDAO = DashboardDAO(conexaoProd)
 
 
 def listar() -> list[Ocorrencia]:
@@ -85,3 +87,14 @@ def validar(id_ocorrencia):
         raise Exception(Erro.COMUM)
 
     return True
+
+def dados_dashboard():
+    resolvidas_invalidas = dashboardDAO.get_ocorrencias_validas_invalidas()
+    ocorrencias_resolvidas = resolvidas_invalidas['num_ocorrencias_resolvidas']
+    ocorrencias_invalidas = resolvidas_invalidas['num_ocorrencias_invalidadas']
+    return {
+        "criadas_hoje": dashboardDAO.get_ocorrencias_criadas_hoje(),
+        "resolvidas": ocorrencias_resolvidas,
+        "invalidas": ocorrencias_invalidas,
+        "cadastradas_nos_ultimos_12_meses": dashboardDAO.get_ocorrencias_cadastradas_12meses()
+    }

@@ -280,3 +280,8 @@ def inativar_setor(id_setor, usuario_solicitante=None):
         raise Exception(Erro.COMUM)
 
     return '', 200
+
+
+@app.get('/dashboard')
+def dados_dashboard(usuario_solicitante=None):
+    return OcorrenciaController.dados_dashboard(), 200
