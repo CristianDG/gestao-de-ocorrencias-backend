@@ -162,7 +162,7 @@ class UsuarioDAO:
     def update_user_prod(self, usuario):#atualiza os dados de um usuário do banco de regra de negócio
         cursor = self.conexaoProd.executa_query(
             'UPDATE usuario SET nome = %s, sobrenome = %s, email = %s, status = %s WHERE id = %s RETURNING id;',
-            (usuario.nome, usuario.sobrenome, usuario.email, usuario.status, usuario.id_prod)
+            (usuario.nome, usuario.sobrenome, usuario.email, usuario.status, usuario.id)
         )
         id_alterado = cursor.fetchone()['id']
         cursor.close()

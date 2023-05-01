@@ -182,6 +182,9 @@ def login():
     if not usuario:
         return {'error': 'email ou senha incorretos'}, 400
 
+    if usuario.status.lower() != "ativo":
+        return {'error': 'usuario inativo'}, 401
+
     token = encode({'id': usuario.id, 'data': dt.now().timestamp()})
 
     return { 'token': token, 'adm': usuario.admin }, 200
@@ -290,7 +293,7 @@ def listar_problemas():
 def listar_locais():
     return OcorrenciaController.listar_locais(), 200
 
-@app.patch('/inativar/<int:id_setor>')
+@app.delete('/setor/<int:id_setor>')
 @autenticar(admin=True)
 def inativar_setor(id_setor, usuario_solicitante=None):
     res = SetorController.inativar(id_setor)
@@ -312,3 +315,13 @@ def mudar_setor(id_gestor, id_setor, usuario_solicitante=None):
     if not res:
         raise Exception(Erro.COMUM)
     return '', 200
+
+
+@app.delete('/gestor/<int:id_gestor>')
+@autenticar(admin=True)
+def inativar_gestor(id_gestor, usuario_solicitante=None):
+    res = GestorController.inativar(id_gestor)
+    if not res:
+        raise Exception(Erro.COMUM)
+
+    return '', 204

@@ -37,6 +37,16 @@ def registrar(dados_gestor):
     return gestor.dict()
 
 
+def inativar(id_gestor):
+    gestor = usuarioDAO.get_user(id_gestor)
+    if not gestor:
+        raise Exception(Erro.GESTOR_INVALIDO)
+
+    gestor.status = "Inativo"
+    print(gestor)
+    usuarioDAO.update_user_prod(gestor)
+    return True
+
 def listar():
     return gestorDAO.get_gestores()
 

@@ -19,6 +19,7 @@ def procurar_por_id(id_usuario):
     if not usuario:
         return False
 
+    usuario.admin = usuario.cargo=='adm'
     return usuario
 
 def procurar_por_login(email, senha):
