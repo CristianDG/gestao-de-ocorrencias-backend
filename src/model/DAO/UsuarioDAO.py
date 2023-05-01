@@ -106,14 +106,14 @@ class UsuarioDAO:
 
     def get_user_auth(self, user_id):#retorna um usuário do banco de autênticação
         cursor = self.conexaoAuth.executa_query(
-            'SELECT cargo, senha FROM users WHERE id = %s;',
+            'SELECT cargo, password FROM users WHERE id = %s;',
             (user_id,)
         )
 
         row = cursor.fetchone()
         cursor.close()
         if row:
-            return {'id_auth': user_id, 'cargo': row['cargo'], 'senha': row['senha']} #id_auth, email e cargo respectivamento
+            return {'id_auth': user_id, 'cargo': row['cargo'], 'senha': row['password']} #id_auth, email e cargo respectivamento
         else:
             return None
 
