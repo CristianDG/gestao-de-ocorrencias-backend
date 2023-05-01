@@ -242,7 +242,7 @@ def modificar_gestor(id_gestor, usuario_solicitante=None):
 
 
 @app.get('/setor')
-@autenticar(gestor=True)
+@autenticar(gestor=True, admin=True)
 def listar_setores():
     return SetorController.listar(), 200
 
