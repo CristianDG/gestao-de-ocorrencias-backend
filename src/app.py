@@ -199,7 +199,7 @@ def mudar_senha(usuario_solicitante=None):
     if not res:
         raise Exception(Erro.COMUM)
 
-    return '', 200
+    return '', 204
 
 
 @app.get('/gestor')
