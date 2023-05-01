@@ -91,10 +91,12 @@ class UsuarioDAO:
         return id_prod
 
     def get_user_prod(self, id):#retorna um usuário do banco de produção
-        cursor = self.conexaoProd.executa_query(
-            "SELECT id , nome, sobrenome, email, matricula, status "
-            "FROM (SELECT u.id, u.nome, u.sobrenome, u.email, u.matricula, u.status, go.setor_atuacao as setor FROM gestor_ocorrencia as go RIGHT JOIN usuario as u on go.id = u.id "
-            "WHERE u.id = %s) as dados_gestor",
+        cursor = self.conexaoProd.executa_query("""
+            SELECT id , nome, sobrenome, email, matricula, status, setor
+            FROM (SELECT u.id, u.nome, u.sobrenome, u.email, u.matricula, u.status,
+                         go.setor_atuacao as setor FROM gestor_ocorrencia as go
+                         RIGHT JOIN usuario as u on go.id = u.id
+                         WHERE u.id = %s) as dados_gestor """,
             (id,)
         )
 

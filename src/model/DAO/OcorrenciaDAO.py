@@ -54,6 +54,21 @@ class OcorrenciaDAO:
         cursor.close()
         return id_ocorrencia
 
+    def get_ocorrencias_para_solucionar_por_setor(self, id_setor):
+        query_sql = "SELECT oc.email_cidadao, oc.descricao, oc.status, oc.data_criacao, oc.data_resolucao," \
+                    "oc.id_local, oc.id_problema, oc.id_setor, lo.nome as local, oc.id " \
+                    "FROM ocorrencia AS oc LEFT JOIN local as lo ON oc.id_local = lo.id " \
+                    "WHERE oc.id_setor = %s and (oc.status = %s or oc.status = %s)"
+
+        cursor = self.conexaoBD.executa_query(query_sql, (id_setor, Status.PENDENTE.value, Status.VALIDA.value))
+        resultados_query = cursor.fetchall()
+        ocorrencias = []#lista contendo objetos de ocorrencias provindos da busca
+
+        for ocorrencia in resultados_query:
+            ocorrencias.append(self.formar_ocorrencia(ocorrencia))
+        cursor.close()
+        return ocorrencias
+
     def get_ocorrencias_para_solucionar(self):
         query_sql = "SELECT oc.email_cidadao, oc.descricao, oc.status, oc.data_criacao, oc.data_resolucao," \
                     "oc.id_local, oc.id_problema, oc.id_setor, lo.nome as local, oc.id " \

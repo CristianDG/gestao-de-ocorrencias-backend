@@ -10,8 +10,10 @@ setorDAO = SetorDAO(conexaoProd)
 dashboardDAO = DashboardDAO(conexaoProd)
 
 
-def listar() -> list[Ocorrencia]:
-    return [ocorrencia.dict() for ocorrencia in ocorrenciaDAO.get_ocorrencias_para_solucionar()]
+def listar(id_setor=None) -> list[Ocorrencia]:
+    ocorrencias = (ocorrenciaDAO.get_ocorrencias_para_solucionar_por_setor(id_setor)
+                   if id_setor else ocorrenciaDAO.get_ocorrencias_para_solucionar())
+    return [ocorrencia.dict() for ocorrencia in ocorrencias]
 
 def encaminhar(id_ocorrencia: int, id_setor: int):
     ocorrencia = ocorrenciaDAO.get_ocorrencia_by_id(id_ocorrencia)

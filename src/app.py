@@ -105,9 +105,10 @@ def hello_world(usuario_solicitante):
     return 'admin' if usuario_solicitante.admin else 'gestor'
 
 @app.get("/ocorrencias")
+@autenticar(gestor=True)
 def listar_ocorrencias(usuario_solicitante=None):
     # TODO: controlar qual é o setor
-    return OcorrenciaController.listar()
+    return OcorrenciaController.listar(usuario_solicitante.setor)
 
 @app.post("/ocorrencias")
 def registrar_ocorrencia():
@@ -128,6 +129,7 @@ def registrar_ocorrencia():
     return OcorrenciaController.registrar(dados_ocorrencia), 201
 
 @app.delete("/ocorrencias/<int:id_ocorrencia>")
+@autenticar(gestor=True)
 def invalidar_ocorrencia(id_ocorrencia, usuario_solicitante=None):
 
     res = OcorrenciaController.invalidar(id_ocorrencia)
@@ -137,6 +139,7 @@ def invalidar_ocorrencia(id_ocorrencia, usuario_solicitante=None):
     return '', 204
 
 @app.patch("/ocorrencias/<int:id_ocorrencia>")
+@autenticar(gestor=True)
 def validar_ocorrencia(id_ocorrencia, usuario_solicitante=None):
 
     res = OcorrenciaController.validar(id_ocorrencia)
@@ -146,6 +149,7 @@ def validar_ocorrencia(id_ocorrencia, usuario_solicitante=None):
     return '', 204
 
 @app.post("/ocorrencias/<int:id_ocorrencia>")
+@autenticar(gestor=True)
 def resolver_ocorrencia(id_ocorrencia, usuario_solicitante=None):
 
     res = OcorrenciaController.resolver(id_ocorrencia)
@@ -155,6 +159,7 @@ def resolver_ocorrencia(id_ocorrencia, usuario_solicitante=None):
     return '', 204
 
 @app.patch("/ocorrencias/<int:id_ocorrencia>/<int:id_setor>")
+@autenticar(gestor=True)
 def encaminhar_ocorrencia(id_ocorrencia, id_setor, usuario_solicitante=None):
 
     # TODO: falta validar
@@ -198,14 +203,17 @@ def mudar_senha(usuario_solicitante=None):
 
 
 @app.get('/gestor')
+@autenticar(admin=True)
 def listar_gestores(usuario_solicitante=None):
     return GestorController.listar()
 
 @app.get('/gestor/<int:id_gestor>')
+@autenticar(admin=True)
 def informacoes_gestor(id_gestor, usuario_solicitante=None):
     return {'status': 'Work In Progress'}
 
 @app.post('/gestor')
+@autenticar(admin=True)
 def registrar_gestor(usuario_solicitante=None):
     gestor_json = request.get_json()
 
@@ -221,6 +229,7 @@ def registrar_gestor(usuario_solicitante=None):
 
 
 @app.post('/gestor/<int:id_gestor>')
+@autenticar(admin=True)
 def modificar_gestor(id_gestor, usuario_solicitante=None):
     gestor_json = request.get_json()
 
@@ -228,10 +237,12 @@ def modificar_gestor(id_gestor, usuario_solicitante=None):
 
 
 @app.get('/setor')
+@autenticar(gestor=True)
 def listar_setores():
     return SetorController.listar(), 200
 
 @app.post('/setor')
+@autenticar(admin=True)
 def registrar_setor(usuario_solicitante=None):
     setor_json = request.get_json()
 
@@ -250,6 +261,7 @@ def registrar_setor(usuario_solicitante=None):
     return SetorController.criar(dados_setor, setor_json['problemas']), 201
 
 @app.patch('/setor/<int:id_setor>')
+@autenticar(admin=True)
 def alterar_setor(id_setor, usuario_solicitante=None):
     setor_json = request.get_json()
 
@@ -263,6 +275,7 @@ def alterar_setor(id_setor, usuario_solicitante=None):
     return SetorController.editar(id_setor, dados_setor, setor_json.get('problemas', [])), 200
 
 @app.get('/setor/<int:id_setor>/problemas')
+@autenticar(admin=True)
 def listar_problemas_do_setor(id_setor, usuario_solicitante=None):
     return SetorController.listar_problemas_do_setor(id_setor), 200
 
@@ -276,6 +289,7 @@ def listar_locais():
     return OcorrenciaController.listar_locais(), 200
 
 @app.patch('/inativar/<int:id_setor>')
+@autenticar(admin=True)
 def inativar_setor(id_setor, usuario_solicitante=None):
     res = SetorController.inativar(id_setor)
     if not res:
@@ -284,11 +298,13 @@ def inativar_setor(id_setor, usuario_solicitante=None):
     return '', 200
 
 @app.get('/dashboard')
+@autenticar(gestor=True, admin=True)
 def dados_dashboard(usuario_solicitante=None):
     return OcorrenciaController.dados_dashboard(), 200
 
 
 @app.patch('/mudar-setor/<int:id_gestor>/<int:id_setor>')
+@autenticar(admin=True)
 def mudar_setor(id_gestor, id_setor, usuario_solicitante=None):
     res =  GestorController.mudar_setor(id_gestor, id_setor), 200
     if not res:
