@@ -251,13 +251,14 @@ def registrar_setor(usuario_solicitante=None):
 def alterar_setor(id_setor, usuario_solicitante=None):
     setor_json = request.get_json()
 
+
     dados_setor = {
         'nome' : setor_json.get('nome'),
-        'descricao' : setor_json.get('descricao'),
+        'desc_responsabilidades' : setor_json.get('desc_responsabilidades'),
         'status': setor_json.get('status')
     }
 
-    return SetorController.editar(id_setor, dados_setor), 200
+    return SetorController.editar(id_setor, dados_setor, setor_json.get('problemas', [])), 200
 
 @app.get('/setor/<int:id_setor>/problemas')
 def listar_problemas_do_setor(id_setor, usuario_solicitante=None):
@@ -271,3 +272,11 @@ def listar_problemas():
 @app.get('/locais')
 def listar_locais():
     return OcorrenciaController.listar_locais(), 200
+
+@app.patch('/inativar/<int:id_setor>')
+def listar_problemas_do_setor(id_setor, usuario_solicitante=None):
+    res = SetorController.inativar(id_setor)
+    if not res:
+        raise Exception(Erro.COMUM)
+
+    return '', 200

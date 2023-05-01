@@ -19,17 +19,21 @@ def criar(dados_setor, problemas):
 
     setor.id = id_setor
 
+
     problemas_salvos = []
-    for problema in problemas:
+    for i in range(4):
+        problema = ''
+        if i < len(problemas):
+            problema = problemas[i]
         if type(problema) == str:
-            setorDAO.create_problema(Problema(problema, id_setor))
-            problemas_salvos.append(problema)
+            id_problema = setorDAO.create_problema(Problema(problema, id_setor))
+            problemas_salvos.append(Problema(problema, id_setor, id= id_problema))
 
     setor.problemas = problemas_salvos
 
     return setor.dict()
 
-def editar(id_setor, dados_setor):
+def editar(id_setor, dados_setor, dados_problemas=[]):
 
     setor = setorDAO.get_setor_por_id(id_setor)
     if not setor:
@@ -38,24 +42,38 @@ def editar(id_setor, dados_setor):
     id_setor = setorDAO.update_setor(Setor(
         id=id_setor,
         nome=dados_setor.get('nome') or setor.nome,
-        descricao=dados_setor.get('descricao') or setor.descricao,
+        desc_responsabilidades=dados_setor.get('desc_responsabilidades') or setor.desc_responsabilidades,
         status=dados_setor.get('status') or setor.status))
 
     if not id_setor:
-        # FIXME: Encontrar um erro melhor
+        # TODO: Encontrar um erro melhor
         raise Exception(Erro.COMUM)
 
+    setor_retorno = setorDAO.get_setor_por_id(id_setor)
 
-    # FIXME: e os problemas?
+    while dados_problemas:
+        problema = Problema(**dados_problemas.pop(), id_setor=id_setor)
+        setorDAO.update_problema(problema)
 
-    return setorDAO.get_setor_por_id(id_setor).dict()
+    setor_retorno.problemas = setorDAO.get_id_problemas(id_setor)
 
+
+    return setor_retorno.dict()
+
+def inativar(id_setor):
+    setor = setorDAO.get_setor_por_id(id_setor)
+    if not setor:
+        raise Exception(Erro.SETOR_INVALIDO)
+
+    setor.status = "Inativo"
+    setorDAO.update_setor(setor)
+    return True
 
 
 def listar():
     setores = []
     for setor in setorDAO.get_setores():
-        setor.problemas = [problema.nome for problema in setorDAO.get_id_problemas(setor.id)]
+        setor.problemas = setorDAO.get_id_problemas(setor.id)
         setores.append(setor)
 
     return setores
