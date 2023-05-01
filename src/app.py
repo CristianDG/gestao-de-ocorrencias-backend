@@ -101,7 +101,6 @@ def autenticar(gestor=False, admin=False):
 @app.route("/")
 @autenticar(gestor=True, admin=True)
 def hello_world(usuario_solicitante):
-    raise Exception()
     return 'admin' if usuario_solicitante.admin else 'gestor'
 
 @app.get("/ocorrencias")
@@ -182,7 +181,7 @@ def login():
 
     token = encode({'id': usuario.id, 'data': dt.now().timestamp()})
 
-    return { 'token': token }, 200
+    return { 'token': token, 'adm': usuario.admin }, 200
 
 @app.patch('/mudar-senha')
 @autenticar(gestor=True, admin=True)
