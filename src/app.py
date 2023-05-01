@@ -222,6 +222,8 @@ def registrar_gestor(usuario_solicitante=None):
 
 @app.post('/gestor/<int:id_gestor>')
 def modificar_gestor(id_gestor, usuario_solicitante=None):
+    gestor_json = request.get_json()
+
     return {'status': 'Work In Progress'}
 
 
@@ -281,7 +283,14 @@ def inativar_setor(id_setor, usuario_solicitante=None):
 
     return '', 200
 
-
 @app.get('/dashboard')
 def dados_dashboard(usuario_solicitante=None):
     return OcorrenciaController.dados_dashboard(), 200
+
+
+@app.patch('/mudar-setor/<int:id_gestor>/<int:id_setor>')
+def mudar_setor(id_gestor, id_setor, usuario_solicitante=None):
+    res =  GestorController.mudar_setor(id_gestor, id_setor), 200
+    if not res:
+        raise Exception(Erro.COMUM)
+    return '', 200

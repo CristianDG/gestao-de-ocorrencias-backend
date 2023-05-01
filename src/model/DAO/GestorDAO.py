@@ -34,6 +34,19 @@ class GestorDAO:
         else:
             return id_criado
 
+    def update_setor_gestor(self, gestor, id_setor):
+        cursor = self.conexaoProd.executa_query(
+            'UPDATE gestor_ocorrencia SET setor_atuacao = %s WHERE id = %s RETURNING id',
+            (id_setor, gestor.id)
+        )
+
+        id_att = cursor.fetchone()['id']
+        cursor.close()
+        if id_att is None:
+            return False
+        else:
+            return id_att
+
     #atualiza os dados do usuário em todas as bases
     def update_gestor(self, usuario):
         id_usuario_auth = self.usuarioDAO.update_user_auth(usuario.id_auth, usuario.email, usuario.senha)
