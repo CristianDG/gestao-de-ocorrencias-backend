@@ -274,7 +274,7 @@ def listar_locais():
     return OcorrenciaController.listar_locais(), 200
 
 @app.patch('/inativar/<int:id_setor>')
-def listar_problemas_do_setor(id_setor, usuario_solicitante=None):
+def inativar_setor(id_setor, usuario_solicitante=None):
     res = SetorController.inativar(id_setor)
     if not res:
         raise Exception(Erro.COMUM)
