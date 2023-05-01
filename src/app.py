@@ -86,7 +86,7 @@ def autenticar(gestor=False, admin=False):
             agora = dt.now()
 
             if (agora - data_token) > ttl_token:
-                return erro
+                return {'error': 'token expirado'}, 403
 
             usuario = UsuarioController.procurar_por_id(id_usuario)
             if not usuario:
