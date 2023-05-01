@@ -92,6 +92,7 @@ def autenticar(gestor=False, admin=False):
             if not usuario:
                 return erro
 
+
             return fn(*args, **kwargs, usuario_solicitante=usuario)
 
         return inner

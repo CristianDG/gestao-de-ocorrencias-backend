@@ -14,15 +14,10 @@ def criar():
 
 def procurar_por_id(id_usuario):
 
-    usuario_auth = usuarioDAO.get_user_auth(id_usuario)
+    usuario = usuarioDAO.get_user(id_usuario)
 
-    if not usuario_auth:
+    if not usuario:
         return False
-
-    dados_usuario = usuarioDAO.get_user_prod(usuarioDAO.get_usuario_auth_map_prod(id_usuario))
-
-    cargo = usuario_auth['cargo']
-    usuario = Usuario(**dados_usuario, cargo=cargo, admin= (cargo == 'adm'))
 
     return usuario
 
@@ -53,7 +48,10 @@ def listar():
 def mudar_senha(usuario, senha, nova_senha):
     usuario.id_auth = usuarioDAO.get_usuario_prod_map_auth(usuario.id)
 
-    senha_banco = usuarioDAO.get_user_auth(usuario.id_auth)['senha']
+
+    dados_usuario = usuarioDAO.get_user_prod(usuarioDAO.get_usuario_auth_map_prod(usuario.id_auth))
+    usuario_banco = usuarioDAO.get_user_auth(usuario.id_auth)
+    senha_banco = usuario_banco['senha']
 
     if senha_banco != senha:
         raise Exception(Erro.SENHA_ERRADA)
