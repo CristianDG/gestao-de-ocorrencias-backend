@@ -71,6 +71,7 @@ class GestorDAO:
             SELECT id , nome, sobrenome, email, matricula, status, dados_gestor.setor
             FROM (SELECT u.id, u.nome, u.sobrenome, u.email, u.matricula, u.status, go.setor_atuacao as setor
                   FROM gestor_ocorrencia as go RIGHT JOIN usuario as u on go.id = u.id) as dados_gestor
+            WHERE status != 'Inativo'
             """
         )
 
