@@ -39,11 +39,10 @@ def registrar(dados_gestor):
 
 def inativar(id_gestor):
     gestor = usuarioDAO.get_user(id_gestor)
-    if not gestor:
+    if not gestor or gestor.cargo=='adm':
         raise Exception(Erro.GESTOR_INVALIDO)
 
     gestor.status = "Inativo"
-    print(gestor)
     usuarioDAO.update_user_prod(gestor)
     return True
 
