@@ -6,7 +6,7 @@ SET SCHEMA 'reportify' ;
 
 CREATE TABLE IF NOT EXISTS reportify.local (
   id SERIAL,
-  nome VARCHAR(45) NOT NULL,
+  nome TEXT NOT NULL,
   PRIMARY KEY (id))
 ;
 
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS reportify.local (
 
 CREATE TABLE IF NOT EXISTS reportify.setor (
   id SERIAL,
-  nome VARCHAR(45) NOT NULL,
+  nome TEXT NOT NULL,
   desc_responsabilidades TEXT NOT NULL,
   status VARCHAR(45) NOT NULL,
   PRIMARY KEY (id))
@@ -24,8 +24,9 @@ CREATE TABLE problema (
 	id SERIAL,
 	nome TEXT NOT NULL,
 	id_setor INT NOT NULL,
+	PRIMARY KEY (id),
 	CONSTRAINT fk_id_setor
-		FOREIGN KEY (id_setor) 
+		FOREIGN KEY (id_setor)
 		REFERENCES setor (id)
 );
 
@@ -33,10 +34,10 @@ CREATE TABLE problema (
 
 CREATE TABLE IF NOT EXISTS reportify.ocorrencia (
   id SERIAL,
-  email_cidadao VARCHAR(45) NULL DEFAULT NULL,
-  descricao VARCHAR(45) NOT NULL,
+  email_cidadao TEXT NULL DEFAULT NULL,
+  descricao TEXT NOT NULL,
   status VARCHAR(45) NOT NULL,
-  data_criacao TIMESTAMP(0) NOT NULL,
+  data_criacao TIMESTAMP(0) NOT NULL DEFAULT timezone('America/Sao_Paulo'::text, CURRENT_TIMESTAMP),
   data_resolucao TIMESTAMP(0) NULL DEFAULT NULL,
   id_local INT NOT NULL,
   id_problema INT NOT NULL,
@@ -55,9 +56,9 @@ CREATE TABLE IF NOT EXISTS reportify.ocorrencia (
   CONSTRAINT fk_ocorrencia_id_problema
   	FOREIGN KEY (id_problema)
 	REFERENCES problema (id)
-	ON DELETE NO ACTION,
+	ON DELETE NO ACTION
 	ON UPDATE CASCADE
-    
+
     );
 
 
@@ -82,7 +83,7 @@ CREATE TABLE IF NOT EXISTS reportify.usuario_auth_map(
 	PRIMARY KEY (id_auth, id_usuario),
 	CONSTRAINT fk_id_usuario_id
 	FOREIGN KEY (id_usuario)
-		REFERENCES reportify.usuario (id),
+		REFERENCES reportify.usuario (id)
 );
 
 
@@ -92,15 +93,15 @@ CREATE TABLE IF NOT EXISTS reportify.adm_sistema(
 		FOREIGN KEY (id)
 		REFERENCES reportify.usuario (id)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE,
-	
+		ON UPDATE CASCADE
+
 );
 
 
 CREATE TABLE IF NOT EXISTS reportify.gestor_ocorrencia (
   id INT NOT NULL,
   setor_atuacao INT NOT NULL,
-  PRIMARY KEY (matricula),
+  PRIMARY KEY (id),
   CONSTRAINT fk_gestor_ocorrencia_setor1
     FOREIGN KEY (setor_atuacao)
     REFERENCES reportify.setor (id)
@@ -110,26 +111,10 @@ CREATE TABLE IF NOT EXISTS reportify.gestor_ocorrencia (
     FOREIGN KEY (id)
     REFERENCES reportify.usuario (id)
     ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    ON UPDATE CASCADE
 );
 
 
-CREATE TABLE IF NOT EXISTS reportify.solucionado (
-  id_ocorrencia INT NOT NULL,
-  id_gestor INT NOT NULL,
-  ultima_alteracao TIMESTAMP(0) NOT NULL,
-  PRIMARY KEY (id_ocorrencia, id_gestor),
-  CONSTRAINT fk_ocorrencia_has_gestor_ocorrencia_ocorrencia1
-    FOREIGN KEY (id_ocorrencia)
-    REFERENCES reportify.ocorrencia (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_ocorrencia_has_gestor_ocorrencia_gestor_ocorrencia1
-    FOREIGN KEY (id_gestor)
-    REFERENCES reportify.gestor_ocorrencia (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-;
 
 SET search_path TO reportify;
 
@@ -153,9 +138,6 @@ INSERT INTO reportify.problema (nome, id_setor) VALUES ('Falta de materiáis', 3
 
 -- Povoamente tabela "reportify.usuario"
 INSERT INTO reportify.usuario (matricula, nome, sobrenome, email, status) values (000001, 'ADM', 'ADM', 'adm@adm.com', 'Ativo');
-INSERT INTO reportify.usuario (matricula, nome, sobrenome, email, status) values (000002, 'Maria', 'Santos', 'maria.santos@exemplo.com', 'Ativo');
-INSERT INTO reportify.usuario (matricula, nome, sobrenome, email, status) values (000003, 'Pedro', 'Oliveira', 'pedro.oliveira@exemplo.com', 'Inativo');
-INSERT INTO reportify.usuario (matricula, nome, sobrenome, email, status) values (000004, 'Ana', 'Ferreira', 'ana.ferreira@exemplo.com', 'Ativo');
 
 
 INSERT INTO reportify.adm_sistema (id) VALUES (1);
