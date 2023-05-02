@@ -67,9 +67,9 @@ CREATE TABLE IF NOT EXISTS reportify.ocorrencia (
 CREATE TABLE IF NOT EXISTS reportify.usuario(
 	id SERIAL,
 	matricula SERIAL,
-	nome VARCHAR(45) NOT NULL,
-	sobrenome VARCHAR(90) NOT NULL,
-	email VARCHAR(45) NOT NULL,
+	nome TEXT NOT NULL,
+	sobrenome TEXT NOT NULL,
+	email TEXT NOT NULL,
 	status VARCHAR(45) NOT NULL,
 	PRIMARY KEY (id)
 
