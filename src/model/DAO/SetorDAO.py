@@ -123,7 +123,12 @@ class SetorDAO:
         return problemas
 
     def get_problemas(self):
-        cursor = self.conexaoProd.executa_query("SELECT * FROM problema WHERE nome != ''")
+
+        cursor = self.conexaoProd.executa_query("""
+        SELECT p.id, p.nome, p.id_setor FROM problema p
+        JOIN setor s ON (p.id_setor = s.id)
+        WHERE p.nome != '' and s.status != 'Inativo'
+        """)
         resultado = cursor.fetchall()
         cursor.close()
         problemas = []
