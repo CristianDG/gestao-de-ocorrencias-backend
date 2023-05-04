@@ -48,7 +48,7 @@ class SetorDAO:
 
     def get_setores(self):
         cursor = self.conexaoProd.executa_query(
-            'SELECT * FROM setor;', ()
+            "SELECT * FROM setor WHERE status != 'Inativo';", ()
         )
 
         setores = []
